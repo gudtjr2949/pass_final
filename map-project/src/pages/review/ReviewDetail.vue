@@ -3,16 +3,31 @@
 
         <div class="review-container">
             <div class="review-header">
-
                 <div class="review-title">{{ review.title }}</div>
-
                 <div class="bookmark-icon">
                     <!-- 북마크 아이콘 또는 이미지 등 원하는 내용으로 대체 -->
                     계획 글 : <i class="fas fa-bookmark">www.naver.com</i>
                 </div>
-
-                <div class="review-content">{{ review.content }}</div>
+                <div class="author-info">
+                    <h5 class="author-name">
+                        작성자 : {{ review.user_id }}
+                    </h5>
+                    <div class="author-actions">
+                        <div v-if="idCheck == false && followCheck == false">
+                            <button @click="Follow" class="follow-btn">
+                                팔로우
+                            </button>
+                        </div>
+                        <div v-else-if="idCheck == false && followCheck == true">
+                            <button @click="UnFollow" class="unfollow-btn">
+                                언팔로우
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div class="divider"></div> <!-- 추가: 점을 그어줄 구분선 -->
+            <div class="review-content">{{ review.content }}</div>
             <div class="image-gallery">
                 <div v-for="image in image" :key="image.image_path" class="image-item">
                     <img :src="getImageUrl(image.image_name)" :alt="image.image_name" />
@@ -53,24 +68,51 @@ export default {
             image: {},
             review_id: '',
             newComment: '',
-            comments: []
+            comments: [],
+            idCheck: '', // 현재 로그인되어 있는 계정과 review.user_id가 다른지 확인
+            followCheck: '', // 현재 로그인되어 있는 계정이 review.user_id를 팔로우 했는지 확인
+            userInfo: {},
         }
     },
     created() {
         const review_id = this.$route.params.review_id;
 
-        axios
-            .get("http://localhost:80/review/api/detail/" + review_id)
+        axios.get("http://localhost:80/review/api/detail/" + review_id)
             .then((res) => {
                 this.review = res.data.review;
                 this.image = res.data.image;
                 this.comments = res.data.comment;
                 this.review_id = review_id;
-            });
+
+                this.userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+
+                return axios.post("http://localhost:80/user/api/checkFollow", {
+                    user_id: this.userInfo.user_id,
+                    following_id: this.review.user_id,
+                });
+            })
+            .then((res) => {
+                if (res.data.check == 1) {
+                    this.followCheck = true;
+                } else {
+                    this.followCheck = false;
+                }
+
+                console.log("팔로우 여부 " + this.followCheck);
+
+                if (this.userInfo.user_id != this.review.user_id) {
+                    console.log(this.userInfo.user_id + " " + this.review.user_id);
+                    this.idCheck = false;
+                } else {
+                    this.idCheck = true;
+                }
+            })
+
+        console.log("작성자와 로그인 유저 동일 여부 " + this.idCheck);
     },
     methods: {
         getImageUrl(imageName) {
-            return require("@/assets/" + this.review_id + "/" + imageName);
+            return require("@/assets/save_image/" + this.review_id + "/" + imageName);
         },
         addComment() {
             const comment = {
@@ -88,6 +130,22 @@ export default {
         },
         toggleLike(comment) {
             comment.liked = !comment.liked;
+        },
+        Follow() {
+            axios.post("http://localhost:80/user/api/follow", {
+                user_id: this.userInfo.user_id,
+                following_id: this.review.user_id,
+            }).then((res) => {
+                this.followCheck = true;
+            })
+        },
+        UnFollow() {
+            axios.post("http://localhost:80/user/api/unfollow", {
+                user_id: this.userInfo.user_id,
+                following_id: this.review.user_id,
+            }).then((res) => {
+                this.followCheck = false;
+            })
         }
     }
 }
@@ -106,7 +164,16 @@ export default {
 }
 
 .review-header {
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+    /* 제목과 계획글, 내용 사이의 간격을 늘림 */
+}
+
+.divider {
+    width: 100%;
+    height: 2px;
+    background-color: #ddd;
+    margin: 20px 0;
+    /* 점을 그어줄 구분선의 간격 조정 */
 }
 
 .review-title {
@@ -207,6 +274,13 @@ export default {
     margin-left: 10px;
 }
 
+.comment-separator {
+    width: 100%;
+    height: 1px;
+    background-color: #ddd;
+    margin: 10px 0;
+}
+
 .user-id {
     font-weight: bold;
     margin-right: 5px;
@@ -244,5 +318,38 @@ export default {
 
 .like-button i.liked {
     color: red;
+}
+
+.author-name {
+    margin-left: auto;
+    text-align: right;
+}
+
+.author-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.author-actions {
+    flex: 0 0 auto;
+}
+
+.follow-btn {
+    background-color: #42a1ff;
+    color: #ffffff;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.unfollow-btn {
+    background-color: #ffffff;
+    color: #42a1ff;
+    font-weight: bold;
+    border: 1px solid #42a1ff;
+    border-radius: 4px;
+    cursor: pointer;
 }
 </style>

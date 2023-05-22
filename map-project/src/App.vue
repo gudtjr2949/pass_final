@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <the-header></the-header>
-    <img :src="require(`@/assets/map3.png`)" class="background-image">
+    <!-- <img :src="require(`@/assets/map3.png`)" class="background-image"> -->
     <router-view />
     <the-footer></the-footer>
   </div>

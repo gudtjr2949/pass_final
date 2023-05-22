@@ -37,9 +37,10 @@ public class ReviewController {
                                                      @RequestParam("user_id") String user_id,
                                                      @RequestParam("title") String title,
                                                      @RequestParam("content") String content) {
+
         Map<String, String> res = new HashMap<>();
 
-        String uploadPath = "/Users/leehyungseok/VS-workspace/map-project/src/assets";
+        String uploadPath = "/Users/leehyungseok/Desktop/SSAFY/pass_final/pass_final/map-project/src/assets/save_image";
 
         try {
             ReviewDto reviewDto = new ReviewDto();
@@ -48,6 +49,8 @@ public class ReviewController {
             reviewDto.setTitle(title);
             reviewDto.setContent(content);
             reviewDto.setFirst_image(images.get(0).getOriginalFilename());
+
+            System.out.println(reviewDto);
 
             reviewService.write(reviewDto);
 

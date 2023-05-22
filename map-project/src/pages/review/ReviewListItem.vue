@@ -28,7 +28,8 @@ export default {
   },
   methods: {
     getImageUrl(review) {
-      return require("@/assets/" + review.review_id + "/" + review.first_image);
+      console.log(review);
+      return require("@/assets/save_image/" + review.review_id + "/" + review.first_image);
     },
   }
 };
