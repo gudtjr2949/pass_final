@@ -55,7 +55,7 @@ public class NoticeController {
 
         try {
             res.put("list", noticeService.list(map));
-            
+
             res.put("resmsg", "공지 게시글 전체 조회 성공");
         } catch (Exception e) {
             res.put("resmsg", "공지 게시글 전체 조회 실패");
