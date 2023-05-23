@@ -37,9 +37,10 @@ public class ReviewController {
                                                      @RequestParam("user_id") String user_id,
                                                      @RequestParam("title") String title,
                                                      @RequestParam("content") String content) {
+
         Map<String, String> res = new HashMap<>();
 
-        String uploadPath = "/Users/leehyungseok/VS-workspace/map-project/src/assets";
+        String uploadPath = "/Users/leehyungseok/Desktop/SSAFY/pass_final/pass_final/map-project/src/assets/save_image";
 
         try {
             ReviewDto reviewDto = new ReviewDto();
@@ -48,6 +49,8 @@ public class ReviewController {
             reviewDto.setTitle(title);
             reviewDto.setContent(content);
             reviewDto.setFirst_image(images.get(0).getOriginalFilename());
+
+            System.out.println(reviewDto);
 
             reviewService.write(reviewDto);
 
@@ -146,17 +149,18 @@ public class ReviewController {
     }
 
     // 팔로워 글 조회
-    @GetMapping("/api/follower_review/{user_id}")
-    public ResponseEntity<Map<String, Object>> follower_review(@PathVariable("user_id") String user_id) {
+    @GetMapping("/api/following_review/{user_id}")
+    public ResponseEntity<Map<String, Object>> following_review(@PathVariable("user_id") String user_id) {
         Map<String, Object> res = new HashMap<>();
 
         try {
-            List<ReviewDto> list = reviewService.follower_list(user_id);
+            List<ReviewDto> list = reviewService.following_list(user_id);
 
             res.put("review", list);
-            res.put("resmsg", "팔로워 후기 게시글 조회 성공");
+
+            res.put("resmsg", "팔로잉 후기 게시글 조회 성공");
         } catch (Exception e) {
-            res.put("resmsg", "팔로워 후기 게시글 조회 실패");
+            res.put("resmsg", "팔로잉 후기 게시글 조회 실패");
             return ResponseEntity.notFound().build();
         }
 

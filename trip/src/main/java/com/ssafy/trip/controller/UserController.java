@@ -1,6 +1,8 @@
 package com.ssafy.trip.controller;
 
+import com.ssafy.trip.dto.user.FollowingDto;
 import com.ssafy.trip.dto.user.UserDto;
+import com.ssafy.trip.service.user.FollowingService;
 import com.ssafy.trip.service.user.OAuthService;
 import com.ssafy.trip.service.user.UserService;
 import org.springframework.http.HttpHeaders;
@@ -24,10 +26,13 @@ public class UserController {
 
     private UserService userService;
     private OAuthService oAuthService;
+    private FollowingService followingService;
 
-    public UserController(UserService userService, OAuthService oAuthService) {
+
+    public UserController(UserService userService, OAuthService oAuthService, FollowingService followingService) {
         this.userService = userService;
         this.oAuthService = oAuthService;
+        this.followingService = followingService;
     }
 
     @GetMapping("/api/idCheck/{user_id}")
@@ -207,6 +212,67 @@ public class UserController {
             res.put("resmsg", "회원정보 삭제 성공");
         } catch (Exception e) {
             res.put("resmsg", "회원정보 삭제 실패");
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/api/follow")
+    public ResponseEntity<Map<String, String>> follow(@RequestBody Map<String, String> map) {
+        Map<String, String> res = new HashMap<>();
+
+        try {
+            FollowingDto followingDto = new FollowingDto();
+
+            followingDto.setUser_id(map.get("user_id"));
+            followingDto.setFollowing_id(map.get("following_id"));
+
+            followingService.follow(followingDto);
+
+            res.put("resmsg", "팔로우 성공");
+        } catch (Exception e) {
+            res.put("resmsg", "팔로우 실패");
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/api/unfollow")
+    public ResponseEntity<Map<String, String>> unfollow(@RequestBody Map<String, String> map) {
+        Map<String, String> res = new HashMap<>();
+
+        try {
+            FollowingDto followingDto = new FollowingDto();
+
+            followingDto.setUser_id(map.get("user_id"));
+            followingDto.setFollowing_id(map.get("following_id"));
+
+            followingService.unfollow(followingDto);
+
+            res.put("resmsg", "언팔로우 성공");
+        } catch (Exception e) {
+            res.put("resmsg", "언팔로우 실패");
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/api/checkFollow")
+    public ResponseEntity<Map<String, Object>> checkFollow(@RequestBody Map<String, String> map) {
+        Map<String, Object> res = new HashMap<>();
+
+        try {
+            FollowingDto followingDto = new FollowingDto();
+
+            followingDto.setUser_id(map.get("user_id"));
+            followingDto.setFollowing_id(map.get("following_id"));
+
+            res.put("check", followingService.followCheck(followingDto));
+
+            res.put("resmsg", "팔로우 체크 성공");
+        } catch (Exception e) {
+            res.put("resmsg", "팔로우 체크 실패");
             return ResponseEntity.notFound().build();
         }
 

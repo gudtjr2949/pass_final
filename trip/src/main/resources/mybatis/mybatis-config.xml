@@ -13,11 +13,11 @@
         <typeAlias type="com.ssafy.trip.dto.place.RouteDto" alias="RouteDto"/>
         <typeAlias type="com.ssafy.trip.dto.place.PlanPlaceDto" alias="PlanPlaceDto"/>
         <typeAlias type="com.ssafy.trip.dto.review.ReviewDto" alias="reviewDto"/>
-        <typeAlias type="com.ssafy.trip.dto.user.FollowerDto" alias="followerDto"/>
         <typeAlias type="com.ssafy.trip.dto.user.FollowingDto" alias="followingDto"/>
         <typeAlias type="com.ssafy.trip.dto.user.UserDto" alias="userDto"/>
         <typeAlias type="com.ssafy.trip.dto.review.ReviewCommentDto" alias="reviewCommentDto"/>
         <typeAlias type="com.ssafy.trip.dto.review.ImageDto" alias="reviewImageDto"/>
+        <typeAlias type="com.ssafy.trip.dto.notice.NoticeDto" alias="noticeDto"/>
     </typeAliases>
 
     <mappers>
@@ -28,6 +28,8 @@
         <mapper resource="mybatis/UserMapper.xml"/>
         <mapper resource="mybatis/ReviewCommentMapper.xml"/>
         <mapper resource="mybatis/ReviewImageMapper.xml"/>
+        <mapper resource="mybatis/FollowingMapper.xml"/>
+        <mapper resource="mybatis/NoticeMapper.xml"/>
     </mappers>
 
 

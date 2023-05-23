@@ -7,7 +7,6 @@ import java.util.Map;
 
 public interface NoticeService {
     void write(NoticeDto noticeDto);
-    int getMaxReviewId();
     List<NoticeDto> list(Map<String, String> map);
     NoticeDto select(int notice_id);
     void modify(NoticeDto noticeDto);

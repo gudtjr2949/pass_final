@@ -16,10 +16,17 @@ import ReviewWrite from "@/pages/review/ReviewWrite"
 import ReviewDetail from "@/pages/review/ReviewDetail"
 import ReviewListItem from "@/pages/review/ReviewListItem"
 import ReviewList from "@/pages/review/ReviewList"
+import ReviewModify from "@/pages/review/ReviewModify"
 
 // Map
 import Map from "@/pages/Map"
 
+// Notice
+import NoticeWrite from "@/pages/notice/NoticeWrite"
+import NoticeDetail from "@/pages/notice/NoticeDetail"
+import NoticeListItem from "@/pages/notice/NoticeListItem"
+import NoticeList from "@/pages/notice/NoticeList"
+import NoticeModify from "@/pages/notice/NoticeModify"
 
 Vue.use(Router)
 
@@ -71,6 +78,27 @@ export default new Router({
     {
       path: '/review/detail/:review_id',
       component: ReviewDetail
+    },
+    {
+      path: '/review/modify',
+      component: ReviewModify
+    },
+    {
+      path: '/notice/list',
+      component: NoticeList
+      
+    },
+    {
+      path: '/notice/write',
+      component: NoticeWrite
+    },
+    {
+      path: '/notice/detail',
+      component: NoticeDetail
+    },
+    {
+      path: '/notice/modify',
+      component: NoticeModify
     },
   ]
 })

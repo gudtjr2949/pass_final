@@ -9,7 +9,6 @@ import java.util.Map;
 @Mapper
 public interface NoticeRepository {
     void write(NoticeDto noticeDto);
-    int getMaxReviewId();
     List<NoticeDto> list(Map<String, String> map);
     NoticeDto select(int notice_id);
     void modify(NoticeDto noticeDto);

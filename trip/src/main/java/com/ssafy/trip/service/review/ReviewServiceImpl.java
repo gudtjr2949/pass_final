@@ -42,8 +42,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewDto> follower_list(String user_id) {
-        return reviewRepository.follower_list(user_id);
+    public List<ReviewDto> following_list(String user_id) {
+        return reviewRepository.following_list(user_id);
     }
 
     @Override

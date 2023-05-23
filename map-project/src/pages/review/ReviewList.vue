@@ -3,7 +3,7 @@
     <div class="button-container">
       <div class="tab-buttons">
         <button @click="showAllReviews" :class="{ active: activeTab === 'all' }">전체</button>
-        <button @click="showFollowerReviews" :class="{ active: activeTab === 'follower' }">팔로워</button>
+        <button @click="showFollowerReviews" :class="{ active: activeTab === 'following' }">팔로잉</button>
         <button @click="showMyReviews" :class="{ active: activeTab === 'my' }">내 글</button>
       </div>
       <router-link to="/review/write">
@@ -30,7 +30,7 @@ export default {
       user_id: JSON.parse(sessionStorage.getItem("userInfo")).user_id,
       reviews: [],
       my_reviews: [],
-      follower_reviews: [],
+      following_reviews: [],
       currentPage: 1,
       pageSize: 8,
       activeTab: "",
@@ -41,8 +41,8 @@ export default {
       this.reviews = res.data.list;
     })
 
-    axios.get("http://localhost:80/review/api/follower_review/" + this.user_id).then((response) => {
-      this.follower_reviews = response.data.review;
+    axios.get("http://localhost:80/review/api/following_review/" + this.user_id).then((response) => {
+      this.following_reviews = response.data.review;
     })
 
     axios.get("http://localhost:80/review/api/my_review/" + this.user_id).then((response) => {
@@ -57,9 +57,9 @@ export default {
 
       const tmp_reviews = [];
 
-      if (this.activeTab == "follower") {
-        this.tmp_reviews = this.follower_reviews;
-        console.log("팔로워 글 보기");
+      if (this.activeTab == "following") {
+        this.tmp_reviews = this.following_reviews;
+        console.log("팔로잉 글 보기");
       } else if (this.activeTab == "my") {
         this.tmp_reviews = this.my_reviews;
         console.log("내 글 보기");
@@ -87,8 +87,8 @@ export default {
 
     currentReviews() {
       // 현재 선택된 탭에 따라 보여줄 리뷰 목록을 결정
-      if (this.activeTab === "follower") {
-        return this.follower_reviews;
+      if (this.activeTab === "following") {
+        return this.following_reviews;
       } else if (this.activeTab === "my") {
         return this.my_reviews;
       } else {
@@ -102,7 +102,7 @@ export default {
     },
 
     showFollowerReviews() {
-      this.activeTab = "follower";
+      this.activeTab = "following";
     },
 
     showMyReviews() {
