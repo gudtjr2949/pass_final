@@ -77,14 +77,13 @@ export default {
   }
 }
 </script>
-<style scoped> .login-container {
+<style scoped>
+ .login-container {
    display: flex;
    flex-direction: column;
    align-items: center;
    justify-content: center;
    height: 100vh;
-   /* background-image: url('/Users/leehyungseok/VS-workspace/map-project/src/assets/wave.png'); */
-
  }
 
  .login-form {

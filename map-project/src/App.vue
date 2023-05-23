@@ -2,10 +2,7 @@
   <div id="app">
     <the-header></the-header>
     <div class="background-container">
-      <img :src="require(`@/assets/airplain.jpg`)" class="background-image">
-      <!-- <img
-        src="https://images.unsplash.com/photo-1627328714377-dd9f50ebc7d6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=701&q=80"
-        alt=""> -->
+      <!-- <img :src="require(`@/assets/back.jpg`)" class="background-image"> -->
     </div>
     <router-view />
     <!-- <the-footer></the-footer> -->
@@ -39,19 +36,23 @@ export default {
   margin: 0 auto;
   animation: fadein 5s ease 3s;
   -webkit-animation: fadein 3s;
+
   /* Safari and Chrome */
 }
 
-/* #app img {
-  width: 100%;
-} */
 .background-container {
-  width: 100%; /* 이미지를 80% 크기로 설정 */
+  width: 100%;
   margin: 0 auto; /* 중앙 정렬을 위해 margin을 auto로 설정 */
+  position: relative; /* 이미지를 포함하는 요소에 position: relative; 설정 */
 }
 
 .background-image {
   width: 100%;
+
+  position: absolute;
+  object-fit: cover;
+  z-index: -1; /* 이미지를 뒤로 보냄 */
+  
 }
 
 @keyframes fadein {
