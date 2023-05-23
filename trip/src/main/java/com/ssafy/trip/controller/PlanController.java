@@ -20,7 +20,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/plan")
-@CrossOrigin(origins = "http://localhost:8080")
+//@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {})
 public class PlanController {
     private PlanService planService;
     private PlaceService placeService;

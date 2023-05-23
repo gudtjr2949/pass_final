@@ -15,9 +15,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/review")
+//@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {})
 public class ReviewController {
 
     private ReviewService reviewService;

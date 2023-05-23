@@ -14,9 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://127.0.0.1:8080")
 @RestController
 @RequestMapping("/notice")
+//@CrossOrigin(origins = "http://127.0.0.1:8080")
+@CrossOrigin(origins = {})
 public class NoticeController {
 
     private NoticeService noticeService;
