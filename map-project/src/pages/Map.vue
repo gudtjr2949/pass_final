@@ -47,37 +47,6 @@
         </div>
     </div>
 
-    <div v-if="identifier === 'route'">
-      <div class="field">
-          <div class="two fields">
-            <div class="field ui right icon input">
-              <label>출발점:</label>
-                <input type="text" ref="origin">                
-            </div>
-
-            <div v-if="origin.length > 0 && identifier === 'route'" class="ui segment" style="max-height: 500px; overflow: scroll">
-                <div class="item" v-for="(start, index) in origin" :key="index">
-                    <div>{{start.formatted_address}}</div>
-                    <button @click="deleteOrigin(index)">삭제</button>
-                </div>
-            </div>
-            
-            <div class="field ui right icon input">
-              <label>도착점:</label>
-                <input type="text" ref="destination">
-            </div>
-            <div v-if="destination.length > 0 && identifier === 'route'" class="ui segment" style="max-height: 500px; overflow: scroll">
-                <div class="item" v-for="(start, index) in origin" :key="index">
-                    <div>{{start.formatted_address}}</div>
-                    <button @click="deleteDestination(index)">삭제</button>
-                </div>
-            </div>
-          </div>
-        </div>
-
-      <button class="ui button" @click="Trans">대중교통</button>
-        <button class="ui button" @click="Car">자동차</button>
-    </div>
 
     <div v-if="identifier === 'road'">
       
@@ -85,7 +54,7 @@
           <div class="two fields">
             <div class="field ui right icon input">
               <label>출발:</label>
-                <input type="text" ref="start">
+                <input type="text" v-model="findA" ref="start">
             </div>
             <div class="field ui right icon input">
               <label>도착:</label>
@@ -100,17 +69,101 @@
     </div>
 
 
-    
+<!-- here ******************************************************************************************************************************************************************************************************************************************************** -->
+
+    <div v-if="identifier === 'route'">
+        <div class="field">
+            <div class="field ui right icon input">
+            <label>경로 추가</label>
+            <input type="text" ref="add">
+            </div>
+        </div>
+        <button class="ui button" >그리기</button>
+        <button class="ui button" >추가</button>
+
+        <div v-if="addRoute.length > 0" class="ui segment" style="max-height: 500px; overflow: scroll">        
+        <div class="field">
+          <div class="ui divided items field">
+            <div class="item" v-for="(route, index) in addRoute" :key="index">
+              <div class="content">
+                    <a :href="route.url" target="_blank">
+                      <img :src="route.photo" width="50" height="50"/>
+                    </a>
+                    <td @click="centerMap(route.lat, route.lng, $event)">{{ route.formatted_address ? route.formatted_address : '-'  }}</td>                                        
+              </div>
+                  <td><button class="ui button" @click="deleteAddRoute(route, $event)">삭제</button></td>                    
+            </div>
+          </div>
+        </div>
+      </div>
+
+        
+    </div>
+
+
+
+
+<!-- here ******************************************************************************************************************************************************************************************************************************************************** -->    
 
     <div v-if="identifier === 'air'">
-      <label>air:</label>
+
+        <div class="field">
+          <div>
+          <label>출발 날짜</label>
+          <input type="date" v-model="airStartDate">
+          </div>
+          <div>
+          <label>출발 시간</label>
+          <input type="time" v-model="airStartTime" step="1">
+          </div>
+        </div>
+        <div>
+          <label>출발 공항</label>
+          <select v-model="departureAirport">:
+            <option v-for="(airport,index) in airports" :value="airport.code" :key="index">{{ airport.name }} ({{airport.country}})</option>
+          </select>
+        </div>
+
+        <div>
+          <label>도착 공항</label>
+          <select v-model="arrivalAirport">
+            <option v-for="(airport,index) in airports" :value="airport.code" :key="index">{{ airport.name }} ({{airport.country}})</option>
+          </select>
+        </div>
+
+        <div>
+          <label>좌석</label>
+          <select v-model="seat">
+            <option v-for="(grade,index) in grades" :value="grade.value" :key="index">{{ grade.name }}</option>
+          </select>
+        </div>
+
+
+        <div v-if="planes.length > 0" class="ui segment" style="max-height: 500px; overflow: scroll">
+        
+        <div class="field">
+          <div class="ui divided items field">
+            <div class="item" v-for="(plane, index) in planes" :key="index">
+              <div class="content">
+                      <div class="header">{{plane[0].departure}} -> {{plane[0].arrival}}</div>
+                      <div class="meta">{{plane[0].carrierCode}} 가격:{{plane[0].price}}</div>
+                      <div class="meta">잔여석:{{plane[0].numberOfBookableSeats}} 경유횟수:{{plane[0].numberOfStops}}</div>
+                  </div>
+                  <td><button class="ui button" @click="makeAir(plane)">추가</button></td>                    
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
     </div>
 
 
     <div v-if="transits.length > 0 && drive === 'bus' && identifier === 'road'" class="ui segment" style="max-height: 500px; overflow: scroll">
       <div class="two fields">
           <div class="field">{{findA}} -> {{findB}}</div>
-          <td><button class="ui button" @click="drawTransit">그리기</button></td>                    
+          <td><button class="ui button" @click="drawTransit">그리기</button></td>    
+          <td><button class="ui button">추가</button></td>                                    
         </div>
       <div class="field">
           <div class="ui divided items field">
@@ -120,8 +173,7 @@
                   <div class="content">
                       <div class="meta">{{transit[0].totalDis}}</div>
                       <div class="meta">{{transit[0].totalDur}}</div>
-                  </div>
-                  <td><button class="ui button">추가</button></td>                    
+                  </div>                  
                     <div v-show="transit[0].show">
                         <div class="item" v-for="(info, i) in transit[0].distance.length" :key="i">
                             <div class="header">{{transit[0].html_instructions[i]}}</div>
@@ -135,17 +187,13 @@
         </div>
       </div>
 
-      <!-- <div v-if="transits.length < 1 && drive === `bus`" class="ui segment" style="max-height: 500px; overflow: scroll">
-        <div class="field">
-          검색 결과 없음
-        </div>
-      </div> -->
 
 
       <div v-if="car.length > 0 && drive === 'drive' && identifier === 'road'" class="ui segment" style="max-height: 500px; overflow: scroll">
         <div class="two fields">
           <div class="field">{{findA}} -> {{findB}}</div>
           <td><button class="ui button" @click="drawDriving">그리기</button></td>                    
+          <td><button class="ui button" >추가</button></td>                    
         </div>
         <div class="field">
           <div class="ui divided items field">
@@ -153,18 +201,12 @@
               <div class="content">
                       <div class="meta">{{info.distance}}</div>
                       <div class="meta">{{info.duration}}</div>
-                  </div>
-                  <td><button class="ui button">추가</button></td>                    
+                  </div>   
             </div>
           </div>
         </div>
       </div>
 
-      <!-- <div v-if="car.length < 1 && drive === `drive`" class="ui segment" style="max-height: 500px; overflow: scroll">
-        <div class="field">
-          검색 결과 없음
-        </div>
-      </div> -->
 
       <div v-if="hotels.length > 0 && identifier === 'hotel'" class="ui segment" style="max-height: 500px; overflow: scroll">
           <table >
@@ -174,7 +216,7 @@
             <th>주소</th>
             <th>추가</th>
         </thead>
-        <tbody v-for="hotel in hotels" :key="hotel.id">
+        <tbody v-for="(hotel,index) in hotels" :key="index">
           <tr>
             <td>
             <a :href="hotel.url" target="_blank">
@@ -183,16 +225,11 @@
           </td>
             <td @click="centerMap(hotel.geometry.location.lat, hotel.geometry.location.lng, $event)">{{ hotel.name ? hotel.name : '-'  }}</td>
             <td @click="centerMap(hotel.geometry.location.lat, hotel.geometry.location.lng, $event)">{{ hotel.vicinity ? hotel.vicinity : '-' }}</td>
-            <td><button class="ui button" @click=makePlan(hotel)>추가</button></td>
+            <td><button class="ui button" @click="makePlan(hotel)">추가</button></td>
           </tr>
         </tbody>
         </table>
       </div>
-
-
-
-
-
 
 
 
@@ -213,7 +250,7 @@
       </td>
         <td @click="centerMap(place.geometry.location.lat, place.geometry.location.lng, $event)">{{ place.name ? place.name : '-'  }}</td>
         <td @click="centerMap(place.geometry.location.lat, place.geometry.location.lng, $event)">{{ place.vicinity ? place.vicinity : '-' }}</td>
-        <td><button class="ui button" @click=makePlan(place)>추가</button></td>
+        <td><button class="ui button" @click="makePlan(place)">추가</button></td>
       </tr>
     </tbody>
 
@@ -239,6 +276,31 @@
             </div>
           </div>
         </div>
+
+
+        <div class="field">
+          <div class="two fields">
+            <div class="field" v-if="resPlane.length > 0">
+              <label>항공권</label>
+              <div class="item" v-for="(plane, index) in resPlane" :key="index">
+              <div class="content">
+                      <div class="header">{{plane[0].departure}} -> {{plane[0].arrival}}</div>
+                      <div class="meta">{{plane[0].carrierCode}} 가격:{{plane[0].price}}</div>
+                      <!-- <div class="meta">잔여석:{{plane[0].numberOfBookableSeats}} 경유횟수:{{plane[0].numberOfStops}}</div> -->
+                  </div>
+                  <td><button class="ui button" @click="deleteAir(plane, $event)">삭제</button></td>                    
+            </div>
+              
+            </div>
+            <div class="field" v-if="resRoute.length > 0">
+              <label>경로</label>
+              
+            </div>
+          </div>
+        </div>
+
+
+
         <div class="field">
             <label style="text-align:left">Title</label>
             <input id = "title" v-model="plan_title" name = "title" type="text"/>
@@ -306,9 +368,168 @@ export default {
             drive:"bus",
             car:[],
             hotels:[],
+            resRoute:[],
+            addRoute:[],
+            resPlane:[],
             origin:[],
             destination:[],
             check:"bus",
+            isDraw:false,
+            planes:[],                        
+            airStartDate:"",
+            airStartTime:"",
+            arrivalAirport:"",
+            departureAirport: '',
+            seat:"",
+            grades :[
+              {value: 'BUSINESS', name: 'BUSINESS'},
+              {value: 'ECONOMY', name: 'ECONOMY'},
+            ],
+            airports: [
+              { code: 'ICN', name: '인천국제공항', country: '대한민국' },
+              { code: 'GMP', name: '김포국제공항', country: '대한민국' },
+              { code: 'CJU', name: '제주국제공항', country: '대한민국' },
+              { code: 'PUS', name: '김해국제공항', country: '대한민국' },
+
+              { code: 'NRT', name: '도쿄 나리타국제공항', country: '일본' },
+              { code: 'HND', name: '도쿄 하네다국제공항', country: '일본' },
+              { code: 'KIX', name: '오사카 국제공항', country: '일본' },
+              { code: 'CTS', name: '신치토세 츠르마이 국제공항', country: '일본' },
+              { code: 'FUK', name: '후쿠오카 국제공항', country: '일본' },
+              { code: 'OKA', name: '오키나와 나하국제공항', country: '일본' },
+              { code: 'NGO', name: '나고야 차우센국제공항', country: '일본' },
+              { code: 'ITM', name: '오사카 이타미국제공항', country: '일본' },
+              { code: 'SDJ', name: '시라쓰 공항', country: '일본' },
+              { code: 'HIS', name: '히메지 공항', country: '일본' },
+
+              { code: 'PEK', name: '베이징국제공항', country: '중국' },
+              { code: 'PVG', name: '상하이 푸동국제공항', country: '중국' },
+              { code: 'CAN', name: '광저우 바이유국제공항', country: '중국' },
+              { code: 'SHA', name: '상하이 홍차오국제공항', country: '중국' },
+              { code: 'CTU', name: '청두 샹리우 국제공항', country: '중국' },
+              { code: 'SZX', name: '심천 보안국제공항', country: '중국' },
+              { code: 'HGH', name: '항저우 송양 국제공항', country: '중국' },
+              { code: 'XIY', name: '서안시 셴양 국제공항', country: '중국' },
+              { code: 'KMG', name: '쿤밍 창승 국제공항', country: '중국' },
+              { code: 'TNA', name: '진남 샤옌 국제공항', country: '중국' },
+
+              { code: 'SGN', name: '호치민 시티 국제공항', country: '베트남' },
+              { code: 'HAN', name: '하노이 국제공항', country: '베트남' },
+              { code: 'DAD', name: '다낭 국제공항', country: '베트남' },
+              { code: 'CXR', name: '남오섬 국제공항', country: '베트남' },
+              { code: 'PQC', name: '푸꾸옥 국제공항', country: '베트남' },
+
+              { code: 'TPE', name: '타이베이 타오위안 국제공항', country: '대만' },
+              { code: 'TSA', name: '타이베이 송산 국제공항', country: '대만' },
+              { code: 'KHH', name: '가오슝 국제공항', country: '대만' },
+              { code: 'RMQ', name: '타이중 국제공항', country: '대만' },
+              { code: 'HUN', name: '훈주 국제공항', country: '대만' },
+
+              { code: 'JFK', name: '뉴욕 존 F. 케네디 국제공항', country: '미국' },
+              { code: 'LAX', name: '로스앤젤레스 국제공항', country: '미국' },
+              { code: 'ORD', name: '시카고 오헤어 국제공항', country: '미국' },
+              { code: 'DFW', name: '다라스 포트워스 국제공항', country: '미국' },
+              { code: 'ATL', name: '애틀랜타 하츠필드-잭슨 국제공항', country: '미국' },
+              { code: 'SFO', name: '샌프란시스코 국제공항', country: '미국' },
+              { code: 'DEN', name: '덴버 국제공항', country: '미국' },
+              { code: 'SEA', name: '시애틀 타코마 국제공항', country: '미국' },
+              { code: 'MIA', name: '마이애미 국제공항', country: '미국' },
+              { code: 'LAS', name: '라스베이거스 매캐런 국제공항', country: '미국' },
+
+              { code: 'MNL', name: '마닐라 니노이 야콥 국제공항', country: '필리핀' },
+              { code: 'CEB', name: '세부 마크스 국제공항', country: '필리핀' },
+              { code: 'DVO', name: '다바오 국제공항', country: '필리핀' },
+              { code: 'CRK', name: '앙헬레스 클락 국제공항', country: '필리핀' },
+              { code: 'ILO', name: '일로일로 국제공항', country: '필리핀' },
+              { code: 'PPS', name: '푸에르토 프린세사 국제공항', country: '필리핀' },
+              { code: 'USU', name: '부산국제공항', country: '필리핀' },
+              { code: 'TAG', name: '타갈로간 국제공항', country: '필리핀' },
+              { code: 'CBO', name: '코타바토 국제공항', country: '필리핀' },
+              { code: 'BWN', name: '브루나이 국제공항', country: '필리핀' },
+
+              { code: 'HKG', name: '홍콩국제공항', country: '홍콩' },
+              { code: 'BKK', name: '방콕 수완나품국제공항', country: '태국' },
+
+              { code: 'LHR', name: '런던 히드로우 국제공항', country: '영국' },
+              { code: 'LGW', name: '런던 갓윅 국제공항', country: '영국' },
+              { code: 'MAN', name: '맨체스터 국제공항', country: '영국' },
+              { code: 'EDI', name: '에딘버러 공항', country: '영국' },
+              { code: 'BHX', name: '버밍엄 국제공항', country: '영국' },
+
+              { code: 'CDG', name: '파리 찰스 드골 국제공항', country: '프랑스' },
+              { code: 'ORY', name: '파리 오를리 국제공항', country: '프랑스' },
+              { code: 'NCE', name: '니스 코트다쥐르 국제공항', country: '프랑스' },
+              { code: 'MRS', name: '마르세유 프보 국제공항', country: '프랑스' },
+              { code: 'LYS', name: '리옹-샹티에 국제공항', country: '프랑스' },
+              
+              { code: 'FRA', name: '프랑크푸르트 국제공항', country: '독일' },
+              { code: 'MUC', name: '뮌헨 국제공항', country: '독일' },
+              { code: 'TXL', name: '베를린 티겔 국제공항', country: '독일' },
+              { code: 'HAM', name: '함부르크 공항', country: '독일' },
+              { code: 'DUS', name: '뒤셀도르프 국제공항', country: '독일' },
+
+              { code: 'AMS', name: '암스테르담 스키폴 국제공항', country: '네덜란드' },
+              { code: 'RTM', name: '로테르담 국제공항', country: '네덜란드' },
+              { code: 'EIN', name: '에인트호벤 국제공항', country: '네덜란드' },
+              { code: 'GRQ', name: '훈스틴 국제공항', country: '네덜란드' },
+              { code: 'MST', name: '마스트리히트 에이포트 국제공항', country: '네덜란드' },
+
+              { code: 'MAD', name: '마드리드 바라하스 국제공항', country: '스페인' },
+              { code: 'BCN', name: '바르셀로나 엘 프라트 국제공항', country: '스페인' },
+              { code: 'AGP', name: '말라가 국제공항', country: '스페인' },
+              { code: 'PMI', name: '마요르카 팔마 데 말리로르카 국제공항', country: '스페인' },
+              { code: 'TFS', name: '테네리페 남부 공항', country: '스페인' },
+
+              { code: 'FCO', name: '로마 피우미치노 국제공항', country: '이탈리아' },
+              { code: 'MXP', name: '밀라노 말펜사 국제공항', country: '이탈리아' },
+              { code: 'VCE', name: '베니스 마르코 폴로 국제공항', country: '이탈리아' },
+              { code: 'CTA', name: '카타니아 폰타나로사 국제공항', country: '이탈리아' },
+              { code: 'NAP', name: '나폴리 카푸따시멘티 국제공항', country: '이탈리아' },
+
+              { code: 'YVR', name: '밴쿠버 국제공항', country: '캐나다' },
+              { code: 'YYZ', name: '토론토 피어슨 국제공항', country: '캐나다' },
+              { code: 'YUL', name: '몬트리올 피에르 엘리오트 트뤼도 국제공항', country: '캐나다' },
+              { code: 'YEG', name: '에드먼턴 국제공항', country: '캐나다' },
+              { code: 'YOW', name: '오타와 맥도널드-카티에 국제공항', country: '캐나다' },
+              
+              
+              { code: 'IST', name: '이스탄불 공항', country: '터키' },
+              { code: 'SAW', name: '이스탄불 사비하 공항', country: '터키' },
+              { code: 'AYT', name: '안탈리아 앤탈리아 공항', country: '터키' },
+              { code: 'ESB', name: '앙카라 에센보아 공항', country: '터키' },
+              { code: 'ADB', name: '이즈미르 아딜레 공항', country: '터키' },
+
+              { code: 'ZRH', name: '취리히 공항', country: '스위스' },
+              { code: 'GVA', name: '제네바 공항', country: '스위스' },
+              { code: 'BSL', name: '바젤-믈쩌하우젠 공항', country: '스위스' },
+              { code: 'ZRH', name: '취리히 공항', country: '스위스' },
+              { code: 'GVA', name: '제네바 공항', country: '스위스' },
+
+              { code: 'SYD', name: '시드니 킨스퍼드 스미스 국제공항', country: '호주' },
+              { code: 'MEL', name: '멜버른 탈라마린 국제공항', country: '호주' },
+              { code: 'BNE', name: '브리즈번 국제공항', country: '호주' },
+              { code: 'PER', name: '퍼스 국제공항', country: '호주' },
+              { code: 'ADL', name: '애들레이드 국제공항', country: '호주' },
+
+              { code: 'SIN', name: '싱가포르 창이국제공항', country: '싱가포르' },
+              { code: 'EZE', name: '부에노스아이레스 국제공항', country: '아르헨티나' },
+              { code: 'AEP', name: '부에노스아이레스 제리코레스 국제공항', country: '아르헨티나' },
+              { code: 'COR', name: '코르도바 국제공항', country: '아르헨티나' },
+              { code: 'MDZ', name: '멘도사 국제공항', country: '아르헨티나' },
+              { code: 'BRC', name: '산 카를로스 드 바리로체 국제공항', country: '아르헨티나' },
+              { code: 'GUM', name: '괌 국제공항', country: '미국령 괌' },
+              { code: 'ROP', name: '롭 공항', country: '미국령 괌' },
+              { code: 'SPN', name: '사이판 국제공항', country: '미국령 괌' },
+              { code: 'TIQ', name: '티니안 국제공항', country: '미국령 괌' },
+              { code: 'UAM', name: '안더스 국제공항', country: '미국령 괌' },
+              
+              
+              
+              
+              
+              
+          ],
+            
         }
     },
   watch: {
@@ -430,7 +651,9 @@ export default {
         directionsService.route(request, (result, status) => {
           if (status === 'OK') {
             directionsRenderer.setDirections(result);
+            directionsRenderer.setMap(null);
             directionsRenderer.setMap(map);
+            this.isDraw = true;
           }
         }).catch(error => {
             console.log(error);
@@ -441,7 +664,7 @@ export default {
         var directionsService = new google.maps.DirectionsService();
         var directionsRenderer = new google.maps.DirectionsRenderer();
 
-        // var map = new google.maps.Map(this.$refs['map']);
+        var map = new google.maps.Map(this.$refs['map']);
 
         var request = {
           origin: this.findA,
@@ -451,8 +674,10 @@ export default {
 
         directionsService.route(request, (result, status) => {
           if (status === 'OK') {
-            directionsRenderer.setDirections(result);
-            directionsRenderer.setMap(this.map);
+            directionsRenderer.setDirections(result);            
+            directionsRenderer.setMap(null);
+            directionsRenderer.setMap(map);
+            this.isDraw = true;
           }
         }).catch(error => {
             console.log(error);
@@ -489,27 +714,16 @@ export default {
         this.drive = "drive";
       },
 
-      trans(){
-        this.check = "bus";
-      },
-      car(){
-        this.check = "drive"
-      },
 
       checkTrans(){
         if (this.drive === "bus"){
           this.findRoad();
         }else{
+          this.drive = "drive"
           this.carRoad();
         }
       },
-      checkRoute(){
-        if (this.check === "bus"){
-          this.findTrans();
-        }else{
-          this.findDrive();
-        }
-      },
+ 
 
       findRoad(){      
         
@@ -550,7 +764,7 @@ export default {
                     html_instructions: html_instructions,
                     show: false,
                     start: this.findA,
-                    end: this.findB
+                    end: this.findB                    
                   })
                   this.transits.push(transit);
                 })
@@ -566,6 +780,19 @@ export default {
 
       centerMap(latitude, longitude, event) {
           event.preventDefault();
+          if (this.isDraw){
+              this.map = new google.maps.Map(this.$refs['map'],{
+                    zoom:15,
+                    center: new google.maps.LatLng(this.curX, this.curY),                    
+                });
+                new google.maps.Marker({
+                    position: new google.maps.LatLng(this.curX, this.curY),                    
+                    animation: google.maps.Animation.DROP,                    
+                    map: this.map,
+                });
+                this.isDraw = false;
+          }
+           
           this.searchX = latitude;
           this.searchY = longitude;
 
@@ -601,17 +828,117 @@ export default {
             this.checkTrans();
             break;
           case 'route':
-            this.checkRoute();
+            // this.checkRoute();
             break;
-        //   case 'air':
-        //     // Execute the function for air
-        //     doAirFunction();
-        //     break;
+          case 'air':            
+            this.findAir();
+            break;
           default:
             this.placeSearch();
             break;
         }
 
+      },
+      findAir(){
+        fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
+        body: "grant_type=client_credentials&client_id=5A4Gye2dEDq3JwBBd3CYlszVu5i2abMm&client_secret=ybgGoAmU9JnOuAvp",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        method: "POST"
+      })
+        .then(response => response.json()) // 첫 번째 then에서 응답을 JSON 형식으로 파싱
+        .then(data => {
+          console.log(data);
+          const token = data.access_token; // 3. 응답에서 토큰 추출
+          console.log(token);
+          console.log(this.airStartDate)
+          console.log(this.airStartTime)
+          // 4. 항공권 정보 요청
+          const url = 'https://test.api.amadeus.com/v2/shopping/flight-offers';
+          const requestData = {
+          currencyCode: 'KRW', // 통화 코드 (예: KRW)
+          originDestinations: [
+            {
+              id: '1',
+              originLocationCode: this.departureAirport, // 출발지 코드 (예: ICN)
+              destinationLocationCode: this.arrivalAirport, // 도착지 코드 (예: NRT)
+              departureDateTimeRange: {
+              date: this.airStartDate, // 출발 날짜 (예: 2023-06-06)
+              time: this.airStartTime, // 출발 시간 (예: 10:00:00)
+            },
+            },
+          ],
+          travelers: [
+            {
+              id: '1',
+              travelerType: 'ADULT', // 여행자 유형 (예: ADULT)
+            },
+          ],
+          sources: ['GDS'], // 데이터 소스 (예: GDS)
+          searchCriteria: {
+            maxFlightOffers: 20, // 최대 항공권 결과 수 (예: 10)
+            flightFilters: {
+            cabinRestrictions: [
+              {
+                cabin: this.seat,
+                coverage: "MOST_SEGMENTS",
+                originDestinationIds: [
+                  "1"
+                ]
+              }
+            ]
+            },
+          },
+            
+          };
+          // 5. 항공권 정보 요청
+          return fetch(url, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          });
+        })
+        .then(response => response.json()) // 6. 응답을 JSON 형식으로 파싱
+        .then(data => {
+          // console.log(data); // 반환된 데이터를 원하는 방식으로 처리
+          let airInfo = data;
+          // console.log(data.meta)
+          // console.log(airInfo.dictionaries.carriers);
+
+          // console.log(airInfo.dictionaries.carriers['OZ']);
+          for (var i = 0; i < data.meta.count; i++){
+            
+            let info = data.data[i];
+            // console.log(info);
+            let detail = info.itineraries[0].segments[0];
+            // let validatingAirlineCodes = info.validatingAirlineCodes[0];
+
+            let carrierCode = airInfo.dictionaries.carriers[detail.carrierCode];            
+            let price = parseInt(info.price.total);
+            let numberOfBookableSeats = info.numberOfBookableSeats;
+            let departure = detail.departure.at;
+            let arrival = detail.arrival.at;
+            let numberOfStops = detail.numberOfStops;
+            
+            let airInfos = [{
+              departure,
+              arrival,
+              price,
+              carrierCode,
+              numberOfBookableSeats,
+              numberOfStops
+            }];
+            this.planes.push(airInfos);
+          }
+          console.log(this.planes);
+        })
+        .catch(error => {
+          console.error(error);
+        });
       },
 
       findHotel(){
@@ -619,7 +946,7 @@ export default {
         this.clearMarkers();
 
         this.hotels = [];
-        const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=호텔&location=${this.searchX},${this.searchY}&radius=5000&key=AIzaSyC5Wsfp6CnCn4wltag9i5XrDNGvOwipkiY`
+        const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=호텔&location=${this.searchX},${this.searchY}&radius=3000&key=AIzaSyC5Wsfp6CnCn4wltag9i5XrDNGvOwipkiY`
         console.log(url)
         console.log(this.searchX);
         console.log(this.searchY);
@@ -786,6 +1113,26 @@ export default {
       makePlan(place){
         this.plans.push(place);
       },
+      
+      makeAir(plane){
+      this.resPlane.push(plane);
+      },
+      deleteAir(plane,event){
+        event.preventDefault();
+        event.stopPropagation();
+        const index = this.resPlane.indexOf(plane);
+        if (index > -1) {
+          this.resPlane.splice(index, 1);
+        }
+      },
+      deleteAddRoute(route,event){
+        event.preventDefault();
+        event.stopPropagation();
+        const index = this.addRoute.indexOf(route);
+        if (index > -1) {
+          this.addRoute.splice(index, 1);
+        }
+      },
 
       deletePlan(plan, event) {
         event.preventDefault();
@@ -868,13 +1215,14 @@ export default {
       checkRoute(e){
         e.preventDefault();
         this.identifier = "route";
-        this.initRoute().then(() => {
+        this.initAdd().then(() => {
               // 초기화 작업 완료 후 실행할 코드
           });
       },
       checkAir(e){
         e.preventDefault();
         this.identifier = "air";
+        
       },
       checkHotel(e){
         e.preventDefault();
@@ -882,14 +1230,74 @@ export default {
         this.findHotel();
       },
 
-
-      initRoad() {
-  return new Promise((resolve) => {
-    this.$nextTick(() => {
-      let startAutocomplete = new google.maps.places.Autocomplete(this.$refs["start"], {
+      initAdd() {
+      return new Promise((resolve) => {
+      this.$nextTick(() => {
+      let startAutocomplete = new google.maps.places.Autocomplete(this.$refs["add"], {
         bounds: new google.maps.LatLngBounds(),
       });
 
+      startAutocomplete.addListener("place_changed", () => {
+        let place = startAutocomplete.getPlace();
+
+        let formatted_address = place.formatted_address;
+        let place_id = place.place_id;
+        let url = place.url;
+        
+        axios.get(`http://localhost/plan/api/photo/${place.place_id}`)
+        .then(response =>{
+          console.log(response);
+          const photos = response.data;
+          const url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=40&photoreference=' + photos.photo + '&key=AIzaSyC5Wsfp6CnCn4wltag9i5XrDNGvOwipkiY'
+          place.photo = url;
+
+          axios.get(`https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyC5Wsfp6CnCn4wltag9i5XrDNGvOwipkiY&place_id=` + place.place_id)
+          .then(res => {
+              var t = res.data.result;
+              console.log(t.url);
+          })
+          
+          
+          let temp = {
+            formatted_address,
+            place_id,
+            url,
+            photo: url,
+            
+            
+          }
+          console.log(temp)
+          this.addRoute.push(temp);
+        })                      
+      });
+      resolve();
+    });
+  });
+},
+
+  initRoad() {
+  return new Promise((resolve) => {
+    this.$nextTick(() => {
+
+      let currentLocation = new google.maps.LatLng(
+            this.searchX,
+            this.searchY      
+      );
+          let geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ location: currentLocation }, (results, status) => {
+            if (status === "OK" && results[0]) {
+              let currentAddress = results[0].formatted_address;
+              console.log(currentAddress);
+              this.findA = currentAddress;
+              this.start = results[0].place_id;
+              resolve();
+            }
+          });
+
+      let startAutocomplete = new google.maps.places.Autocomplete(this.$refs["start"], {
+        bounds: new google.maps.LatLngBounds(),
+      });
+    
       startAutocomplete.addListener("place_changed", () => {
         let place = startAutocomplete.getPlace();
         console.log(place.formatted_address)
