@@ -9,4 +9,5 @@ public class NoticeDto {
     String title;
     String content;
     String register_time;
+    int hit;
 }

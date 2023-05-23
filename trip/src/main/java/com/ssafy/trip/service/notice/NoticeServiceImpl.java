@@ -22,11 +22,6 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public int getMaxReviewId() {
-        return 0;
-    }
-
-    @Override
     public List<NoticeDto> list(Map<String, String> map) {
         return noticeRepository.list(map);
     }

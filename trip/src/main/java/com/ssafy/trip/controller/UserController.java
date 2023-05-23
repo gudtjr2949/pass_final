@@ -228,7 +228,6 @@ public class UserController {
             followingDto.setUser_id(map.get("user_id"));
             followingDto.setFollowing_id(map.get("following_id"));
 
-            System.out.println(followingDto);
             followingService.follow(followingDto);
 
             res.put("resmsg", "팔로우 성공");

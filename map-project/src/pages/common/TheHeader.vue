@@ -17,6 +17,9 @@
         <a class="header-link" @click="checkLogin('/review/list')">
           후기 게시판
         </a>
+        <a class="header-link" @click="checkLogin('/notice/list')">
+          공지사항
+        </a>
       
       </div>
       <div class="user-info" v-if="userInfo">
@@ -45,7 +48,6 @@ export default {
   watch: {
     userInfo: {
       handler(userInfo) {
-        console.log("변화감지");
         if (this.userInfo) {
           sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
         } else {
@@ -61,6 +63,7 @@ export default {
         alert("로그인 하세요");
         router.push("/user/login");
       } else {
+        console.log("공지사항");
         router.push(path);
       }
     },

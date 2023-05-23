@@ -63,10 +63,10 @@
         where user_id = #{user_id}
     </select>
 
-    <select id="follower_list" parameterType="String" resultMap="reviewMap">
+    <select id="following_list" parameterType="String" resultMap="reviewMap">
         select user_id, review_id, title, `like`, hit, register_time, first_image
         from travel_review
-        where user_id in (select follower_id from follower where user_id = #{user_id})
+        where user_id in (select following_id from following where user_id = #{user_id})
     </select>
 
     <update id="modify" parameterType="reviewDto">

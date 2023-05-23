@@ -15,6 +15,7 @@
         <typeAlias type="com.ssafy.trip.dto.user.UserDto" alias="userDto"/>
         <typeAlias type="com.ssafy.trip.dto.review.ReviewCommentDto" alias="reviewCommentDto"/>
         <typeAlias type="com.ssafy.trip.dto.review.ImageDto" alias="reviewImageDto"/>
+        <typeAlias type="com.ssafy.trip.dto.notice.NoticeDto" alias="noticeDto"/>
     </typeAliases>
 
     <mappers>
@@ -26,6 +27,7 @@
         <mapper resource="mybatis/ReviewCommentMapper.xml"/>
         <mapper resource="mybatis/ReviewImageMapper.xml"/>
         <mapper resource="mybatis/FollowingMapper.xml"/>
+        <mapper resource="mybatis/NoticeMapper.xml"/>
     </mappers>
 
 
