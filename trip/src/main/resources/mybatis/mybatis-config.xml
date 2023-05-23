@@ -9,6 +9,8 @@
         <typeAlias type="com.ssafy.trip.dto.plan.UserPlanDto" alias="UserPlanDto"/>
         <typeAlias type="com.ssafy.trip.dto.plan.PlanCommentDto" alias="PlanCommentDto"/>
         <typeAlias type="com.ssafy.trip.dto.place.PlaceDto" alias="PlaceDto"/>
+        <typeAlias type="com.ssafy.trip.dto.place.PlaneDto" alias="PlaneDto"/>
+        <typeAlias type="com.ssafy.trip.dto.place.RouteDto" alias="RouteDto"/>
         <typeAlias type="com.ssafy.trip.dto.place.PlanPlaceDto" alias="PlanPlaceDto"/>
         <typeAlias type="com.ssafy.trip.dto.review.ReviewDto" alias="reviewDto"/>
         <typeAlias type="com.ssafy.trip.dto.user.FollowerDto" alias="followerDto"/>

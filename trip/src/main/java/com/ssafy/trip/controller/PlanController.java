@@ -76,6 +76,10 @@ public class PlanController {
 
         System.out.println(planDto);
 
+
+
+
+
         List<Map<String, Object>> plans = (List<Map<String, Object>>) map.get("plans");
         List<String> placeId = new ArrayList<>();
 

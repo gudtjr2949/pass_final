@@ -1,5 +1,6 @@
 package com.ssafy.trip.service.place;
 
+import com.ssafy.trip.dto.place.RouteDto;
 import com.ssafy.trip.dto.place.PlaceDto;
 import com.ssafy.trip.dto.place.PlanPlaceDto;
 
@@ -12,5 +13,7 @@ public interface PlaceService {
     void deletePlanPlace(int plan_id);
     void addPlanPlace(PlanPlaceDto planPlaceDto); // 여행지 경로 설정
     boolean checkPlaceId(String place_id);
+
+
 
 }
