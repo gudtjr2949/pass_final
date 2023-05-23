@@ -41,7 +41,7 @@ public class ReviewController {
 
         Map<String, String> res = new HashMap<>();
 
-        String uploadPath = "/Users/leehyungseok/Desktop/SSAFY/pass_final/pass_final/map-project/src/assets/save_image";
+        String uploadPath = "/Users/leehyungseok/Downloads/plan/src/assets/save_image";
 
         try {
             ReviewDto reviewDto = new ReviewDto();
@@ -49,9 +49,9 @@ public class ReviewController {
             reviewDto.setUser_id(user_id);
             reviewDto.setTitle(title);
             reviewDto.setContent(content);
-            reviewDto.setFirst_image(images.get(0).getOriginalFilename());
 
-            System.out.println(reviewDto);
+            System.out.println(images.get(0).getOriginalFilename());
+            reviewDto.setFirst_image(images.get(0).getOriginalFilename());
 
             reviewService.write(reviewDto);
 
@@ -169,25 +169,37 @@ public class ReviewController {
     }
 
     @PutMapping("/api/modify/{review_id}")
-    public ResponseEntity<Map<String, String>> modify(@RequestBody Map<String, String> map, @PathVariable("review_id") int review_id,
-                                                      @RequestParam(value = "image[]", required = false) List<MultipartFile> images) {
+    public ResponseEntity<Map<String, String>> modify(@RequestParam(value = "image[]", required = false) List<MultipartFile> images,
+                                                      @RequestParam("review_id") int review_id,
+                                                      @RequestParam("title") String title,
+                                                      @RequestParam("content") String content
+//                                                      @RequestParam(value = "plan_id", required = false) int plan_id
+    ) {
         Map<String, String> res = new HashMap<>();
 
-        String uploadPath = "/Users/leehyungseok/Desktop/image";
+        String uploadPath = "/Users/leehyungseok/Downloads/plan/src/assets/save_image/" + review_id;
 
         try {
             ReviewDto reviewDto = new ReviewDto();
             reviewDto.setReview_id(review_id);
-            reviewDto.setTitle(map.get("title"));
-            reviewDto.setContent(map.get("content"));
-
-            if (map.get("plan_id") != null) {
-                reviewDto.setPlan_id(Integer.parseInt(map.get("plan_id")));
-            }
+            reviewDto.setTitle(title);
+            reviewDto.setContent(content);
+            reviewDto.setFirst_image(images.get(0).getOriginalFilename());
 
             reviewService.modify(reviewDto);
 
             List<ImageDto> list = new ArrayList<>();
+
+            // 폴더 지우기
+            File folder = new File(uploadPath);
+
+
+            if (!folder.exists()) {
+                folder.mkdirs();
+            } else {
+                folder.delete();
+                folder.mkdirs();
+            }
 
             for (int i = 0; i < images.size(); i++) {
                 String originalFilename = images.get(i).getOriginalFilename();
@@ -195,7 +207,7 @@ public class ReviewController {
                 ImageDto imageDto = new ImageDto();
 
                 imageDto.setReview_id(review_id);
-                imageDto.setImage_path(uploadPath + "/" + review_id);
+                imageDto.setImage_path(uploadPath);
                 imageDto.setImage_name(originalFilename);
 
                 list.add(imageDto);
