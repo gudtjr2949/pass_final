@@ -528,6 +528,8 @@ export default {
       identifier: "",
       radius: 1,
       greenMarkers: [],
+      disRoute: [],
+      timeRoute: [],
       start: "",
       end: "",
       transits: [],
@@ -803,7 +805,35 @@ export default {
       http
         .post("/plan/api/find", route)
         .then((response) => {
-          console.log(response);
+          
+          let result = response.data.optroute;
+          // console.log(result.orderByDis);
+          // console.log(result.orderByTime);
+          // console.log(result.orderBy_dis_max_dis);
+          // console.log(result.orderBy_dis_max_time);
+          // console.log(result.orderBy_time_max_dis);
+          // console.log(result.orderBy_time_max_time);
+
+          for(var i = 0; i < result.orderByDis.length; i++){
+            // console.log(result.orderByDis[i]);
+            if (Number(result.orderByDis[i]) || result.orderByDis[i] == '0'){
+              console.log(result.orderByDis[i]);              
+              console.log(this.addRoute[result.orderByDis[i]]);
+              this.disRoute.push(this.addRoute[result.orderByDis[i]]);
+            }
+          }
+
+          for(var i = 0; i < result.orderByTime.length; i++){
+            // console.log(result.orderByTime[i]);
+            if (Number(result.orderByTime[i]) || result.orderByTime[i] == '0'){
+              console.log(result.orderByTime[i]);              
+              console.log(this.addRoute[result.orderByTime[i]]);
+              this.timeRoute.push(this.addRoute[result.orderByTime[i]]);
+            }
+          }
+          
+          
+
         })
         .catch((error) => {
           console.error(error);
