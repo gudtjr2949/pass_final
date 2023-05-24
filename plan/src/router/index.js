@@ -13,6 +13,9 @@ import Follower from "@/components/user/UserFollower"
 import Following from "@/components/user/UserFollowing"
 import Modify from "@/components/user/UserModify"
 
+// Plan
+import PlanList from "@/components/plan/PlanList"
+
 // Review
 import ReviewWrite from "@/components/review/ReviewWrite"
 import ReviewDetail from "@/components/review/ReviewDetail"
@@ -76,6 +79,10 @@ export default new Router({
         const authUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}`;
         window.location.href = authUrl;
       },
+    },
+    {
+      path: '/plan/list',
+      component: PlanList
     },
     {
       path: '/review/list',

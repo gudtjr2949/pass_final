@@ -18,6 +18,7 @@
           마이페이지
         </router-link>
         <router-link to="/map">지도</router-link>
+        <a class="header-link" @click="checkLogin(`/plan/list`)">계획</a>
         <a class="header-link" @click="checkLogin(`/review/list`)"
           >후기 게시판</a
         >
