@@ -90,7 +90,7 @@ export default {
       //     router.push("/review/list");
       //   });
       axios
-        .post("http://192.168.208.54:80/review/api/write", formData)
+        .post("http://192.168.0.7:80/review/api/write", formData)
         .then(() => {
           router.push("/review/list");
         });

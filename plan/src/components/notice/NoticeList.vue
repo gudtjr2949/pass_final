@@ -1,7 +1,7 @@
 <template>
   <div class="notice-list">
     <div class="table-container">
-      <router-link to="/notice/write">
+      <router-link to="/notice/write" v-if="this.idCheck">
         <button class="write-button">공지글 작성</button>
       </router-link>
       <table class="notice-table">
@@ -39,24 +39,33 @@
 </template>
   
 <script>
-// import NoticeListItem from "./NoticeListItem.vue";
+import NoticeListItem from "./NoticeListItem.vue";
 import { http } from "@/api/http";
 
 export default {
   name: "NoticeList",
   components: {
-    // NoticeListItem,
+    NoticeListItem,
   },
   data() {
     return {
       user_id: JSON.parse(sessionStorage.getItem("userInfo")).user_id,
       notice: [],
+      idCheck: ''
     };
   },
   created() {
     http.get("/notice/api/list").then((response) => {
       this.notice = response.data.list;
     });
+
+    http.get(`/user/api/checkAdmin/${this.user_id}`).then((response) => {
+      if (response.data.check) {
+        this.idCheck = true;
+      } else {
+        this.idCheck = false;
+      }
+    })
   },
   computed: {
     chunkedNotices() {

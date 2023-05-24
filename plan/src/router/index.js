@@ -11,6 +11,7 @@ import Join from "@/components/user/UserJoin"
 import MyPage from "@/components/user/MyPage"
 import Follower from "@/components/user/UserFollower"
 import Following from "@/components/user/UserFollowing"
+import Modify from "@/components/user/UserModify"
 
 // Review
 import ReviewWrite from "@/components/review/ReviewWrite"
@@ -57,6 +58,10 @@ export default new Router({
     {
       path: '/user/following',
       component: Following
+    },
+    {
+      path: '/user/modify',
+      component: Modify
     },
     {
       path: '/map',

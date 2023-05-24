@@ -30,8 +30,10 @@ public class ReviewCommentController {
             reviewCommentDto.setUser_id(map.get("user_id"));
             reviewCommentDto.setContent(map.get("content"));
 
+            System.out.println(reviewCommentDto);
             reviewCommentService.write(reviewCommentDto);
 
+            System.out.println("작성 성공");
             res.put("resmsg", "후기 게시글 댓글 작성 성공");
         } catch (Exception e) {
             res.put("resmsg", "후기 게시글 댓글 작성 실패");
