@@ -1,9 +1,10 @@
 	
 package com.ssafy.trip.service.place;
 
-import com.ssafy.trip.dto.place.RouteDto;
 import com.ssafy.trip.dto.place.PlaceDto;
 import com.ssafy.trip.dto.place.PlanPlaceDto;
+import com.ssafy.trip.dto.place.PlaneDto;
+import com.ssafy.trip.dto.place.RouteDto;
 import com.ssafy.trip.repository.place.PlaceRepository;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -178,7 +179,37 @@ public Map<String, Object> findPath(Map<String, Object> map, int len) {
     return resMap;
 }
 
-public void recursive(int idx, int[] sel){
+    @Override
+    public void insertPlane(PlaneDto planeDto) {
+        placeRepository.insertPlane(planeDto);
+    }
+
+    @Override
+    public void insertRoute(RouteDto routeDto) {
+        placeRepository.insertRoute(routeDto);
+    }
+
+    @Override
+    public void deletePlane(int plan_id) {
+        placeRepository.deletePlane(plan_id);
+    }
+
+    @Override
+    public void updatePlane(PlaneDto planeDto) {
+        placeRepository.updatePlane(planeDto);
+    }
+
+    @Override
+    public void deleteRoute(int plan_id) {
+        placeRepository.deleteRoute(plan_id);
+    }
+
+    @Override
+    public void updateRoute(RouteDto routeDto) {
+        placeRepository.updateRoute(routeDto);
+    }
+
+    public void recursive(int idx, int[] sel){
 
     if (idx >= size){        
         int total_dis = 0;
