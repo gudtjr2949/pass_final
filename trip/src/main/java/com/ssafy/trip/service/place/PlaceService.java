@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.ssafy.trip.dto.place.PlaceDto;
 import com.ssafy.trip.dto.place.PlanPlaceDto;
+import com.ssafy.trip.dto.place.PlaneDto;
+import com.ssafy.trip.dto.place.RouteDto;
 
 public interface PlaceService {
     void placeInfo(PlaceDto placeDto); // 장소 기본 정보 입력
@@ -14,5 +16,11 @@ public interface PlaceService {
     void addPlanPlace(PlanPlaceDto planPlaceDto); // 여행지 경로 설정
     boolean checkPlaceId(String place_id);
     Map<String, Object> findPath(Map<String, Object> map, int size);
+    void insertPlane(PlaneDto planeDto);
+    void insertRoute(RouteDto routeDto);
+    void deletePlane(int plan_id);
+    void updatePlane(PlaneDto planeDto);
+    void deleteRoute(int plan_id);
+    void updateRoute(RouteDto routeDto);
 
 }

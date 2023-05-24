@@ -62,6 +62,55 @@
         where plan_id = #{plan_id};
     </delete>
 
+    <insert id="insertPlane" parameterType="PlaneDto">
+        insert into plan_plane
+        (plan_id, departure, arrival, price, carrierCode, numberOfBookableSeats, numberOfStops, sequence)
+        values(#{plan_id}, #{departure}, #{arrival}, #{price},#{carrierCode}, #{numberOfBookableSeats}, #{numberOfStops}, #{sequence})
+    </insert>
+
+    <insert id="insertRoute" parameterType="RouteDto">
+        insert into plan_route
+        (plan_id, formatted_address, place_id, url, photo, sequence, idx)
+        values(#{plan_id}, #{formatted_address}, #{place_id}, #{url},#{photo}, #{sequence}, #{idx})
+    </insert>
+
+
+    <delete id="deletePlane" parameterType="int">
+        delete
+        from plan_plane
+        where plan_id = #{plan_id};
+    </delete>
+
+    <delete id="deleteRoute" parameterType="int">
+        delete
+        from plan_route
+        where plan_id = #{plan_id};
+    </delete>
+
+
+    <update id="updatePlane" parameterType="PlaneDto">
+        update plan_plane
+        set departure = #{departure},
+        arrival = #{arrival},
+        price = #{price},
+        carrierCode = #{carrierCode},
+        numberOfBookableSeats = #{numberOfBookableSeats},
+        numberOfStops = #{numberOfStops},
+        sequence = #{sequence}
+        where plan_id = #{plan_id};
+    </update>
+
+    <update id="updateRoute" parameterType="RouteDto">
+        update plan_route
+        set formatted_address = #{formatted_address},
+        place_id = #{place_id},
+        url = #{url},
+        photo = #{photo},
+        sequence = #{sequence},
+        idx = #{idx}
+        where plan_id = #{plan_id};
+    </update>
+
 
 
 </mapper>

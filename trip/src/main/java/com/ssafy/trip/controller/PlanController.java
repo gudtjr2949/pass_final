@@ -1,9 +1,8 @@
 package com.ssafy.trip.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.ssafy.trip.dto.place.OptRouteDto;
-import com.ssafy.trip.dto.place.PlaceDto;
-import com.ssafy.trip.dto.place.PlanPlaceDto;
+import com.ssafy.trip.dto.place.*;
 import com.ssafy.trip.dto.plan.PlanDto;
 import com.ssafy.trip.dto.plan.PlanInfoDto;
 import com.ssafy.trip.dto.plan.UserPlanDto;
@@ -14,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +21,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/plan")
-//@CrossOrigin(origins = "http://localhost:8080")
-@CrossOrigin(origins = {})
+@CrossOrigin(origins = "http://localhost:8080")
+//@CrossOrigin(origins = {})
 public class PlanController {
     private PlanService planService;
     private PlaceService placeService;
@@ -68,26 +68,21 @@ public class PlanController {
         System.out.println("post" + map);
         Map<String, Object> resmap = new HashMap<>();
         PlanDto planDto = new PlanDto();
-//        planDto.setUser_id((String) map.get("user_id"));
-        planDto.setUser_id("ssafy");
+        planDto.setUser_id((String) map.get("user_id"));
+//        planDto.setUser_id("ssafy");
         planDto.setTitle((String) map.get("title"));
         planDto.setContent((String) map.get("content"));
         planDto.setStart_date((String) map.get("start_date"));
         planDto.setEnd_date((String) map.get("end_date"));
         planDto.setStore((String) map.get("store"));
 
-        System.out.println(planDto);
-
-
-
-
 
         List<Map<String, Object>> plans = (List<Map<String, Object>>) map.get("plans");
         List<String> placeId = new ArrayList<>();
 
 
-//        String user_id = (String) map.get("user_id");
-        String user_id = "ssafy";
+        String user_id = (String) map.get("user_id");
+//        String user_id = "ssafy";
 
         try {
             planService.makePlan(planDto);
@@ -97,6 +92,7 @@ public class PlanController {
 
             for (Map<String, Object> plan : plans) {
                 UserPlanDto userPlanDto = new UserPlanDto();
+
                 userPlanDto.setPlan_id(plan_id);
                 userPlanDto.setName((String) plan.get("name"));
                 userPlanDto.setVicinity((String) plan.get("vicinity"));
@@ -128,6 +124,62 @@ public class PlanController {
 
                 placeService.addPlanPlace(planPlaceDto);
             }
+
+            boolean flag = true;
+            List<List<Map<String, Object>>> planes = (List<List<Map<String, Object>>>) map.get("planes");
+            idx = 1;
+            for (List<Map<String, Object>> plane : planes) {
+                for (Map<String, Object> dto : plane) {
+                    PlaneDto planeDto = new PlaneDto();
+                    planeDto.setDeparture((String) dto.get("departure"));
+                    planeDto.setArrival((String) dto.get("arrival"));
+                    planeDto.setPrice(dto.get("price").toString());
+                    planeDto.setCarrierCode((String) dto.get("carrierCode"));
+                    planeDto.setNumberOfBookableSeats(dto.get("numberOfBookableSeats").toString());
+                    planeDto.setNumberOfStops(dto.get("numberOfStops").toString());
+                    planeDto.setPlan_id(plan_id);
+                    planeDto.setSequence(idx++);
+
+                    placeService.insertPlane(planeDto);
+                    flag = false;
+                }
+            }
+            if (flag){
+                PlaneDto planeDto = new PlaneDto();
+                planeDto.setPlan_id(plan_id);
+                planeDto.setSequence(1);
+                placeService.insertPlane(planeDto);
+            }
+
+
+            idx = 1;
+            flag = true;
+            List<List<Map<String, Object>>> routes = (List<List<Map<String, Object>>>) map.get("routes");
+            for (List<Map<String, Object>> route : routes) {
+                int index = 1;
+                for (Map<String, Object> dto : route) {
+                    System.out.println(dto);
+                    RouteDto routeDto = new RouteDto();
+                    routeDto.setPlan_id(plan_id);
+                    routeDto.setFormatted_address((String) dto.get("formatted_address"));
+                    routeDto.setPlace_id((String) dto.get("place_id"));
+                    routeDto.setUrl((String) dto.get("url"));
+                    routeDto.setPhoto((String) dto.get("photo"));
+                    routeDto.setSequence(idx);
+                    routeDto.setIdx(index++);
+                    placeService.insertRoute(routeDto);
+                    flag = false;
+                }
+                idx++;
+            }
+            if (flag){
+                RouteDto routeDto = new RouteDto();
+                routeDto.setPlan_id(plan_id);
+                routeDto.setIdx(1);
+                routeDto.setSequence(1);
+                placeService.insertRoute(routeDto);
+            }
+
             return new ResponseEntity<>(resmap, HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
@@ -197,14 +249,13 @@ public class PlanController {
         System.out.println(map.get("plan_id"));
         int plan_id = (int) map.get("plan_id");
         planDto.setPlan_id(plan_id);
-//        planDto.setUser_id((String) map.get("user_id"));
+        planDto.setUser_id((String) map.get("user_id"));
         planDto.setTitle((String) map.get("title"));
         planDto.setContent((String) map.get("content"));
         planDto.setStart_date((String) map.get("start_date"));
         planDto.setEnd_date((String) map.get("end_date"));
         planDto.setStore((String) map.get("store"));
 
-//        List<String> placeId = (List<String>) map.get("place_id");
 
         List<Map<String, Object>> plans = (List<Map<String, Object>>) map.get("plans");
         List<String> placeId = new ArrayList<>();
@@ -239,6 +290,47 @@ public class PlanController {
 
                 placeService.addPlanPlace(planPlaceDto);
             }
+
+            placeService.deletePlane(plan_id);
+            List<List<Map<String, Object>>> planes = (List<List<Map<String, Object>>>) map.get("planes");
+            idx = 1;
+            for (List<Map<String, Object>> plane : planes) {
+                for (Map<String, Object> dto : plane) {
+                    PlaneDto planeDto = new PlaneDto();
+                    planeDto.setDeparture((String) dto.get("departure"));
+                    planeDto.setArrival((String) dto.get("arrival"));
+                    planeDto.setPrice(dto.get("price").toString());
+                    planeDto.setCarrierCode((String) dto.get("carrierCode"));
+                    planeDto.setNumberOfBookableSeats(dto.get("numberOfBookableSeats").toString());
+                    planeDto.setNumberOfStops(dto.get("numberOfStops").toString());
+                    planeDto.setPlan_id(plan_id);
+                    planeDto.setSequence(idx++);
+
+                    placeService.insertPlane(planeDto);
+                }
+            }
+
+            idx = 1;
+            placeService.deleteRoute(plan_id);
+            List<List<Map<String, Object>>> routes = (List<List<Map<String, Object>>>) map.get("routes");
+            for (List<Map<String, Object>> route : routes) {
+                int index = 1;
+                for (Map<String, Object> dto : route) {
+                    System.out.println(dto);
+                    RouteDto routeDto = new RouteDto();
+                    routeDto.setPlan_id(plan_id);
+                    routeDto.setFormatted_address((String) dto.get("formatted_address"));
+                    routeDto.setPlace_id((String) dto.get("place_id"));
+                    routeDto.setUrl((String) dto.get("url"));
+                    routeDto.setPhoto((String) dto.get("photo"));
+                    routeDto.setSequence(idx);
+                    routeDto.setIdx(index++);
+                    placeService.insertRoute(routeDto);
+                }
+                idx++;
+            }
+
+
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
@@ -336,21 +428,16 @@ public class PlanController {
     
     @PostMapping("/api/find")
     ResponseEntity<Map<String, Object>> findPath(@RequestBody Map<String, Object> map){
-        System.out.println(map);
-        //https://maps.googleapis.com/maps/api/directions/json?origin=%EB%8F%84%EC%BF%84&destination=%EC%98%A4%EC%82%AC%EC%B9%B4&key=AIzaSyC5Wsfp6CnCn4wltag9i5XrDNGvOwipkiY&mode=DRIVING
-     
+
     int size = (int) map.get("size");
     Map<String,Object> resMap = new HashMap<>();
         
     
     try {
     	Map<String, Object> findPath = placeService.findPath(map, size);
-    	System.out.println(findPath);
-    	
-    	
+
     	Gson gson = new Gson();
     	OptRouteDto optroute = gson.fromJson(gson.toJson(findPath), OptRouteDto.class);
-    	System.out.println(optroute);
     	
     	resMap.put("optroute", optroute);
     	

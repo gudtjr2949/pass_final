@@ -2,6 +2,8 @@ package com.ssafy.trip.repository.place;
 
 import com.ssafy.trip.dto.place.PlaceDto;
 import com.ssafy.trip.dto.place.PlanPlaceDto;
+import com.ssafy.trip.dto.place.PlaneDto;
+import com.ssafy.trip.dto.place.RouteDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -15,6 +17,12 @@ public interface PlaceRepository {
     void deletePlanPlace(int plan_id);
     void addPlanPlace(PlanPlaceDto planPlaceDto); // 여행지 경로 설정
     int checkPlaceId(String place_id);
+    void insertPlane(PlaneDto planeDto);
+    void insertRoute(RouteDto routeDto);
+    void deletePlane(int plan_id);
+    void updatePlane(PlaneDto planeDto);
+    void deleteRoute(int plan_id);
+    void updateRoute(RouteDto routeDto);
 
 
 

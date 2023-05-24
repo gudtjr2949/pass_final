@@ -169,7 +169,7 @@
                 <td>
                   <button
                     class="ui button"
-                    @click="deleteAddRoute(route, $event)"
+                    @click="deleteAddRoute(index, $event)"
                   >
                     삭제
                   </button>
@@ -434,7 +434,7 @@
 
     <div class="four wide column">
       <form class="ui segment large form" ref="myForm">
-        <h3>user_id 의 두근두근 여행</h3>
+        <h3>{{user_id}} 의 두근두근 여행</h3>
 
         <div class="field">
           <div class="two fields">
@@ -463,7 +463,7 @@
           <div class="two fields">
             <div class="field" v-if="resPlane.length > 0">
               <label>항공권</label>
-              <div class="item" v-for="(plane, index) in resPlane" :key="index">
+              <div class="item" v-for="(plane, index) in resPlane" :key="index" id = "planes" name = "planes">
                 <div class="content">
                   <div class="header">
                     {{ plane[0].departure }} -> {{ plane[0].arrival }}
@@ -496,7 +496,7 @@
                   </div>
                   </div>                    
                   </div>
-                  <button class="ui button" @click="deleteResRoute(routes, $event)">삭제</button>
+                  <button class="ui button" @click="deleteResRoute(index, $event)">삭제</button>
                 </div>
             </div>
             
@@ -571,12 +571,14 @@
 <script>
 import axios from "axios";
 import { http } from "@/api/http";
+import _ from 'lodash';
 
 // 장소 검색, 주변 검색, 길 찾기, 최적경로, 항공권, 호텔
 export default {
   data() {
     return {
       map: "",
+      user_id: JSON.parse(sessionStorage.getItem("userInfo")).user_id,
       curX: "",
       curY: "",
       searchX: "",
@@ -829,35 +831,47 @@ export default {
   watch: {
     // Watch for changes in the form data
     start_date: {
-      handler(newValue) {
+      handler: _.debounce(function(newValue) {
         this.sendFormData();
-      },
-      deep: true, // Watch nested properties
+      }, 500), // 500ms 디바운스 지연 시간
+      deep: true,
     },
     end_date: {
-      handler(newValue) {
+      handler: _.debounce(function(newValue) {
         this.sendFormData();
-      },
+      }, 500), // 500ms 디바운스 지연 시간
       deep: true,
     },
     plan_title: {
-      handler(newValue) {
+      handler: _.debounce(function(newValue) {
         this.sendFormData();
-      },
+      }, 500), // 500ms 디바운스 지연 시간
       deep: true,
     },
     plans: {
-      handler(newValue) {
+      handler: _.debounce(function(newValue) {
         this.sendFormData();
-      },
+      }, 500), // 500ms 디바운스 지연 시간
       deep: true,
     },
     content: {
-      handler(newValue) {
+      handler: _.debounce(function(newValue) {
         this.sendFormData();
-      },
+      }, 500), // 500ms 디바운스 지연 시간
       deep: true,
     },
+    resRoute:{
+      handler: _.debounce(function(newValue) {
+        this.sendFormData();
+      }, 500), // 500ms 디바운스 지연 시간
+      deep: true,
+    },
+    resPlane:{
+      handler: _.debounce(function(newValue) {
+        this.sendFormData();
+      }, 500), // 500ms 디바운스 지연 시간
+      deep: true,
+    }
   },
   computed: {
     coordinates() {
@@ -869,8 +883,10 @@ export default {
   },
 
   methods: {
+    
     addPlanRoute(route){
-      this.resRoute.push(route);
+      let temp = route;
+      this.resRoute.push(temp);
     },
 
     sortByTime(){
@@ -1571,10 +1587,10 @@ export default {
         this.resPlane.splice(index, 1);
       }
     },
-    deleteAddRoute(route, event) {
+    deleteAddRoute(index, event) {
       event.preventDefault();
       event.stopPropagation();
-      const index = this.addRoute.indexOf(route);
+      // const index = this.addRoute.indexOf(route);
       if (index > -1) {
         this.addRoute.splice(index, 1);
       }
@@ -1595,11 +1611,11 @@ export default {
         this.disRoute.splice(index, 1);
       }
     },
-    deleteResRoute(route, event){
+    deleteResRoute(index, event){
       event.preventDefault();
       event.stopPropagation();
-      console.log(route)
-      const index = this.resRoute.indexOf(route);
+      // console.log(route)
+      // const index = this.resRoute.indexOf(route);
       if (index > -1) {
         this.resRoute.splice(index, 1);
       }
@@ -1615,17 +1631,21 @@ export default {
     },
 
     submitForm() {
+      
       const formData = {
+        user_id: this.user_id,
         start_date: this.start_date,
         end_date: this.end_date,
         title: this.plan_title,
         plans: this.plans,
         content: this.content,
         plan_id: this.plan_id,
+        routes : this.resRoute,
+        planes : this.resPlane,
         store: "YES",
         // 기타 다른 필요한 데이터
       };
-
+      
       http.put("/plan/api", formData).then((response) => {
         console.log(response.data);
       });
@@ -1639,7 +1659,10 @@ export default {
           plans: this.plans,
           content: this.content,
           plan_id: this.plan_id,
+          routes : this.resRoute,
+          planes : this.resPlane,
           store: "NO",
+
           // 기타 다른 필요한 데이터
         };
 
@@ -1648,11 +1671,14 @@ export default {
         });
       } else {
         const formData = {
+          user_id: this.user_id,
           start_date: this.start_date,
           end_date: this.end_date,
           title: this.plan_title,
           plans: this.plans,
           content: this.content,
+          routes : this.resRoute,
+          planes : this.resPlane,
           store: "NO",
           // 기타 다른 필요한 데이터
         };

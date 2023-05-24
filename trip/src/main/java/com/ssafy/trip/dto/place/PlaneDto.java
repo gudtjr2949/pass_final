@@ -1,5 +1,8 @@
 package com.ssafy.trip.dto.place;
 
+import lombok.Data;
+
+@Data
 public class PlaneDto {
 
     private int plan_id;
