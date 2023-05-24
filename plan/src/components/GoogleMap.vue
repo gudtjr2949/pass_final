@@ -797,6 +797,7 @@ export default {
       for (var i = 0; i < this.addRoute.length; i++) {
         route[i] = this.addRoute[i];
       }
+      route.size = this.addRoute.length;
       //https://maps.googleapis.com/maps/api/directions/json?origin=%EB%8F%84%EC%BF%84&destination=%EC%98%A4%EC%82%AC%EC%B9%B4&key=AIzaSyC5Wsfp6CnCn4wltag9i5XrDNGvOwipkiY&mode=DRIVING
       console.log(route);
       http
@@ -810,6 +811,7 @@ export default {
     },
 
     initMap() {
+
       console.log("맵 시작");
       let autocomplete = new google.maps.places.Autocomplete(
         this.$refs["autocomplete"],
@@ -817,36 +819,16 @@ export default {
           bounds: new google.maps.LatLngBounds(),
         }
       );
+      
+      
+            this.curX = 36.355;
+            this.curY = 127.2983;
+            
+            this.searchX = 36.355;
+            this.searchY = 127.2983;
 
-      autocomplete.addListener("place_changed", () => {
-        let place = autocomplete.getPlace();
-        console.log(place);
-        this.showUserLocationOnTheMap(
-          place.geometry.location.lat(),
-          place.geometry.location.lng()
-        );
-      });
 
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          this.curX = position.coords.latitude;
-          this.curY = position.coords.longitude;
-
-          this.searchX = position.coords.latitude;
-          this.searchY = position.coords.longitude;
-
-          const baseURL =
-            "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-          const location = this.curX + "," + this.curY;
-          const radius = 5000;
-          const keyword = encodeURIComponent(this.title); // 특수 문자가 포함될 수 있으므로 인코딩
-          const apiKey = "AIzaSyC5Wsfp6CnCn4wltag9i5XrDNGvOwipkiY"; // 실제로 사용하는 구글 API 키로 대체해야 합니다.
-
-          const url = `${baseURL}?location=${location}&radius=${radius}&keyword=${keyword}&key=${apiKey}`;
-
-          axios.get(url).then((response) => {
-            console.log("axios");
-            this.address = response.data.results[0].formatted_address;
+            this.address = "대전 삼성 연수원";
             this.map = new google.maps.Map(this.$refs["map"], {
               zoom: 15,
               center: new google.maps.LatLng(this.curX, this.curY),
@@ -856,9 +838,65 @@ export default {
               animation: google.maps.Animation.DROP,
               map: this.map,
             });
-          });
-        });
-      }
+
+
+          autocomplete.addListener("place_changed", () => {
+            let place = autocomplete.getPlace();
+            console.log(place);
+
+             axios.get(`https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyC5Wsfp6CnCn4wltag9i5XrDNGvOwipkiY&place_id=` +place.place_id)
+             .then(response => {
+              console.log(response);
+              var t = response.data.result;
+              console.log(t);
+              this.centerMap(
+              t.geometry.location.lat,
+              t.geometry.location.lng,
+            );
+          })
+
+
+            // this.showUserLocationOnTheMap(
+            //   place.geometry.location.lat(),
+            //   place.geometry.location.lng()
+            // );
+          }); 
+
+      // if (navigator.geolocation) {
+        
+        
+      //   navigator.geolocation.getCurrentPosition((position) => {
+          
+      //     this.curX = position.coords.latitude;
+      //     this.curY = position.coords.longitude;
+          
+      //     this.searchX = position.coords.latitude;
+      //     this.searchY = position.coords.longitude;
+          
+      //     const baseURL =
+      //       "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
+      //     const location = this.curX + "," + this.curY;
+      //     const radius = 5000;
+      //     const keyword = encodeURIComponent(this.title); // 특수 문자가 포함될 수 있으므로 인코딩
+      //     const apiKey = "AIzaSyC5Wsfp6CnCn4wltag9i5XrDNGvOwipkiY"; // 실제로 사용하는 구글 API 키로 대체해야 합니다.
+
+      //     const url = `${baseURL}?location=${location}&radius=${radius}&keyword=${keyword}&key=${apiKey}`;
+      //     console.log(url);
+      //     axios.get(url).then((response) => {
+      //       console.log("axios");
+      //       this.address = response.data.results[0].formatted_address;
+      //       this.map = new google.maps.Map(this.$refs["map"], {
+      //         zoom: 15,
+      //         center: new google.maps.LatLng(this.curX, this.curY),
+      //       });
+      //       new google.maps.Marker({
+      //         position: new google.maps.LatLng(this.curX, this.curY),
+      //         animation: google.maps.Animation.DROP,
+      //         map: this.map,
+      //       });
+      //     });
+      //   });
+      // }
     },
 
     drawRoute() {
@@ -1038,7 +1076,9 @@ export default {
     },
 
     centerMap(latitude, longitude, event) {
-      event.preventDefault();
+      if (event !== undefined){
+          event.preventDefault();
+      }      
       if (this.isDraw) {
         this.map = new google.maps.Map(this.$refs["map"], {
           zoom: 15,

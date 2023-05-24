@@ -20,7 +20,7 @@ import ReviewList from "@/components/review/ReviewList"
 import ReviewModify from "@/components/review/ReviewModify"
 
 // Map
-import Map from "@/components/Map"
+import Map from "@/components/GoogleMap"
 
 // Notice
 import NoticeWrite from "@/components/notice/NoticeWrite"
