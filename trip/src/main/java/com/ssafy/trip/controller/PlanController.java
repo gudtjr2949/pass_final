@@ -1,6 +1,7 @@
 package com.ssafy.trip.controller;
 
 import com.google.gson.Gson;
+import com.ssafy.trip.dto.place.OptRouteDto;
 import com.ssafy.trip.dto.place.PlaceDto;
 import com.ssafy.trip.dto.place.PlanPlaceDto;
 import com.ssafy.trip.dto.plan.PlanDto;
@@ -332,5 +333,34 @@ public class PlanController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    @PostMapping("/api/find")
+    ResponseEntity<Map<String, Object>> findPath(@RequestBody Map<String, Object> map){
+        System.out.println(map);
+        //https://maps.googleapis.com/maps/api/directions/json?origin=%EB%8F%84%EC%BF%84&destination=%EC%98%A4%EC%82%AC%EC%B9%B4&key=AIzaSyC5Wsfp6CnCn4wltag9i5XrDNGvOwipkiY&mode=DRIVING
+     
+    int size = (int) map.get("size");
+    Map<String,Object> resMap = new HashMap<>();
+        
+    
+    try {
+    	Map<String, Object> findPath = placeService.findPath(map, size);
+    	System.out.println(findPath);
+    	
+    	
+    	Gson gson = new Gson();
+    	OptRouteDto optroute = gson.fromJson(gson.toJson(findPath), OptRouteDto.class);
+    	System.out.println(optroute);
+    	
+    	resMap.put("optroute", optroute);
+    	
+    	return new ResponseEntity<Map<String,Object>>(resMap, HttpStatus.OK);
+    }catch (Exception e) {
+    	return new ResponseEntity<Map<String,Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+    
+
+}
+    
 
 }
