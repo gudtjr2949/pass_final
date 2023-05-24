@@ -94,8 +94,73 @@
         <button class="ui button" @click="findRoute">최적 경로</button>
         <button class="ui button">추가</button>
 
+        <div v-if="isCheckOpt">
+            <button class="ui button" @click="sortByTime">시간</button>
+            <button class="ui button" @click="sortByDis">거리</button>
+        </div>
+
+        <div v-if="isCheckOpt && isTime" class="ui segment" style="max-height: 500px; overflow: scroll">
+            <div class="field">
+            <div class="ui divided items field">
+              <div class="item" v-for="(route, index) in timeRoute" :key="index">
+                <div class="content">
+                  <a :href="route.url" target="_blank">
+                    <img :src="route.photo" width="50" height="50" />
+                  </a>
+                  <td @click="centerMap(route.lat, route.lng, $event)">
+                    {{
+                      route.formatted_address ? route.formatted_address : "-"
+                    }}
+                  </td>
+                </div>
+                <td>
+                  <button
+                    class="ui button"
+                    @click="deleteTimeRoute(route, $event)"
+                  >
+                    삭제
+                  </button>
+                </td>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>총 시간: {{this.timeByTimeH/ 24}} 시간 {{(this.timeByTimeM%24)/60}} 분 총 거리: {{this.disByTime}} km</label>
+            </div>            
+        </div>
+        <div v-if="isCheckOpt && isDis" class="ui segment" style="max-height: 500px; overflow: scroll">
+            <div class="field">
+            <div class="ui divided items field">
+              <div class="item" v-for="(route, index) in disRoute" :key="index">
+                <div class="content">
+                  <a :href="route.url" target="_blank">
+                    <img :src="route.photo" width="50" height="50" />
+                  </a>
+                  <td @click="centerMap(route.lat, route.lng, $event)">
+                    {{
+                      route.formatted_address ? route.formatted_address : "-"
+                    }}
+                  </td>
+                </div>
+                <td>
+                  <button
+                    class="ui button"
+                    @click="deleteDisRoute(route, $event)"
+                  >
+                    삭제
+                  </button>
+                </td>
+              </div>
+            </div>
+          </div>     
+          <div class="field">
+            <label>총 시간: {{this.timeByDisH/24}} 시간 {{(this.timeByDisM%24)/60}} 분 총 거리: {{this.disByDis}} km</label>
+            </div>            
+        </div>
+
+
         <div
-          v-if="addRoute.length > 0"
+          v-if="addRoute.length > 0 && isNormal"
           class="ui segment"
           style="max-height: 500px; overflow: scroll"
         >
@@ -530,6 +595,12 @@ export default {
       greenMarkers: [],
       disRoute: [],
       timeRoute: [],
+      timeByDisH:"",
+      timeByDisM:"",
+      disByDis:"",
+      timeByTimeH:"",
+      timeByTimeM:"",
+      disByTime:"",
       start: "",
       end: "",
       transits: [],
@@ -551,6 +622,10 @@ export default {
       arrivalAirport: "",
       departureAirport: "",
       seat: "",
+      isCheckOpt: false,
+      isNormal: true,
+      isTime: false,
+      isDis: false,
       grades: [
         { value: "BUSINESS", name: "BUSINESS" },
         { value: "ECONOMY", name: "ECONOMY" },
@@ -793,7 +868,23 @@ export default {
   },
 
   methods: {
+
+    sortByTime(){
+      this.isDis = false;
+      this.isNormal = false;
+      this.isTime = true;
+    },
+    sortByDis(){
+      this.isTime = false;
+      this.isNormal = false;
+      this.isDis = true;
+    },
+
     findRoute() {
+      this.isCheckOpt = true;
+      this.isNormal = true;
+      this.isTime = false;
+      this.isDis = false;
       const route = {};
 
       for (var i = 0; i < this.addRoute.length; i++) {
@@ -805,35 +896,36 @@ export default {
       http
         .post("/plan/api/find", route)
         .then((response) => {
-          
+      
           let result = response.data.optroute;
-          // console.log(result.orderByDis);
-          // console.log(result.orderByTime);
-          // console.log(result.orderBy_dis_max_dis);
-          // console.log(result.orderBy_dis_max_time);
-          // console.log(result.orderBy_time_max_dis);
-          // console.log(result.orderBy_time_max_time);
+          
+          this.disByDis = result.orderBy_dis_max_dis;
+          
+          console.log(result.orderBy_dis_max_time);
+          console.log(result.orderBy_time_max_time);
+
+          // this.timeByDisH = Math.round(result.orderBy_dis_max_time / 60);
+          // this.timeByDisM = Math.round(result.orderBy_dis_max_time % 60);
+
+          this.timeByDisH = Math.floor(result.orderBy_dis_max_time / 60);
+          this.timeByDisM = Math.ceil(result.orderBy_dis_max_time % 60);
+
+          this.disByTime = result.orderBy_time_max_dis;
+          this.timeByTimeH = Math.round(result.orderBy_time_max_time / 60);
+          this.timeByTimeM = Math.round(result.orderBy_time_max_time % 60);
 
           for(var i = 0; i < result.orderByDis.length; i++){
-            // console.log(result.orderByDis[i]);
-            if (Number(result.orderByDis[i]) || result.orderByDis[i] == '0'){
-              console.log(result.orderByDis[i]);              
-              console.log(this.addRoute[result.orderByDis[i]]);
+            if (Number(result.orderByDis[i]) || result.orderByDis[i] == '0'){              
               this.disRoute.push(this.addRoute[result.orderByDis[i]]);
             }
           }
-
+          
           for(var i = 0; i < result.orderByTime.length; i++){
             // console.log(result.orderByTime[i]);
-            if (Number(result.orderByTime[i]) || result.orderByTime[i] == '0'){
-              console.log(result.orderByTime[i]);              
-              console.log(this.addRoute[result.orderByTime[i]]);
+            if (Number(result.orderByTime[i]) || result.orderByTime[i] == '0'){              
               this.timeRoute.push(this.addRoute[result.orderByTime[i]]);
             }
           }
-          
-          
-
         })
         .catch((error) => {
           console.error(error);
@@ -1477,6 +1569,22 @@ export default {
       const index = this.addRoute.indexOf(route);
       if (index > -1) {
         this.addRoute.splice(index, 1);
+      }
+    },
+    deleteTimeRoute(route, event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const index = this.timeRoute.indexOf(route);
+      if (index > -1) {
+        this.timeRoute.splice(index, 1);
+      }
+    },
+    deleteDisRoute(route, event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const index = this.disRoute.indexOf(route);
+      if (index > -1) {
+        this.disRoute.splice(index, 1);
       }
     },
 
