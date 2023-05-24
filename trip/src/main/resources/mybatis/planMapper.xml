@@ -16,12 +16,80 @@
         <result column="store" property="store" jdbcType="VARCHAR" javaType="String" />
     </resultMap>
 
+    <resultMap id="UserPlanDtoMap" type="UserPlanDto">
+        <result column="plan_id" property="plan_id" jdbcType="INTEGER" javaType="int" />
+        <result column="name" property="name" jdbcType="VARCHAR" javaType="String" />
+        <result column="vicinity" property="vicinity" jdbcType="VARCHAR" javaType="String" />
+        <result column="photo" property="photo" jdbcType="VARCHAR" javaType="String" />
+        <result column="url" property="url" jdbcType="VARCHAR" javaType="String" />
+        <result column="sequence" property="sequence" jdbcType="INTEGER" javaType="int" />
+    </resultMap>
+
+    <resultMap id="PlaneDtoDtoMap" type="PlaneDto">
+        <result column="plan_id" property="plan_id" jdbcType="INTEGER" javaType="int" />
+        <result column="departure" property="departure" jdbcType="VARCHAR" javaType="String" />
+        <result column="arrival" property="arrival" jdbcType="VARCHAR" javaType="String" />
+        <result column="price" property="price" jdbcType="VARCHAR" javaType="String" />
+        <result column="carrierCode" property="carrierCode" jdbcType="VARCHAR" javaType="String" />
+        <result column="numberOfBookableSeats" property="numberOfBookableSeats" jdbcType="VARCHAR" javaType="String" />
+        <result column="numberOfStops" property="numberOfStops" jdbcType="VARCHAR" javaType="String" />
+        <result column="sequence" property="sequence" jdbcType="INTEGER" javaType="int" />
+    </resultMap>
+
+    <resultMap id="RouteDtoMap" type="RouteDto">
+        <result column="plan_id" property="plan_id" jdbcType="INTEGER" javaType="int" />
+        <result column="formatted_address" property="formatted_address" jdbcType="VARCHAR" javaType="String" />
+        <result column="place_id" property="place_id" jdbcType="VARCHAR" javaType="String" />
+        <result column="url" property="url" jdbcType="VARCHAR" javaType="String" />
+        <result column="photo" property="photo" jdbcType="VARCHAR" javaType="String" />
+        <result column="sequence" property="sequence" jdbcType="INTEGER" javaType="int" />
+        <result column="idx" property="idx" jdbcType="INTEGER" javaType="int" />
+    </resultMap>
+
+
+    <select id="planRoute" parameterType="int" resultMap="RouteDtoMap">
+        select *
+        from plan_route
+        where plan_id = #{plan_id}
+        order by sequence, idx;
+    </select>
+
+    <select id="planPlane" parameterType="int" resultMap="PlaneDtoDtoMap">
+        select *
+        from plan_plane
+        where plan_id = #{plan_id}
+        order by sequence;
+    </select>
+
+
+    <select id="planPlace" parameterType="int" resultMap="UserPlanDtoMap">
+        select *
+        from user_plan_info
+        where plan_id = #{plan_id}
+        order by sequence;
+    </select>
+
+    <select id="planList" resultMap="PlanDtoMap">
+        select *
+        from travel_plan
+        where store like "YES"
+        order by register_time;
+    </select>
+
+    <select id="following_list" resultMap="PlanDtoMap">
+        select *
+        from travel_plan
+        where store like "YES"
+        and user_id in (select following_id from following where user_id = #{user_id})
+        order by register_time;
+    </select>
+
 
     <select id="listByUserId" parameterType="String" resultMap="PlanDtoMap">
         select *
         from travel_plan
         where user_id = #{user_id}
-        order by register_time desc limit 12;
+        order by register_time desc;
     </select>
 
     <insert id="makePlan" parameterType="PlanDto">

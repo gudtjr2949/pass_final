@@ -1,6 +1,5 @@
 package com.ssafy.trip.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.ssafy.trip.dto.place.*;
 import com.ssafy.trip.dto.plan.PlanDto;
@@ -12,7 +11,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +29,82 @@ public class PlanController {
         this.planService = planService;
         this.placeService = placeService;
     }
+
+    @GetMapping("/api/route/{plan_id}")
+    ResponseEntity<Map<String,Object>> planRoute(@PathVariable("plan_id") int plan_id){
+
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<RouteDto> list = planService.planRoute(plan_id);
+            map.put("list", list);
+
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/api/plane/{plan_id}")
+    ResponseEntity<Map<String,Object>> planPlane(@PathVariable("plan_id") int plan_id){
+
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<PlaneDto> list = planService.planPlane(plan_id);
+            map.put("list", list);
+
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/api/place/{plan_id}")
+    ResponseEntity<Map<String, Object>> planPlace(@PathVariable("plan_id") int plan_id){
+
+        Map<String,Object> map = new HashMap<>();
+        try {
+            List<UserPlanDto> list = planService.planPlace(plan_id);
+            map.put("list", list);
+
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @GetMapping("/api")
+    ResponseEntity<Map<String, Object>> planList(){
+
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<PlanDto> list = planService.planList();
+//            System.out.println(list);
+            map.put("list", list);
+
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/api/following_plan/{user_id}")
+    ResponseEntity<Map<String, Object>> following_list(@PathVariable String user_id){
+
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<PlanDto> list = planService.following_list(user_id);
+            map.put("list", list);
+
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
 
     @GetMapping("/api/{user_id}") // user의 모든 계획 글 정보, 장소 정보
     ResponseEntity<Map<String, Object>> planListByUserId(@PathVariable String user_id){
@@ -445,8 +519,6 @@ public class PlanController {
     }catch (Exception e) {
     	return new ResponseEntity<Map<String,Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-    
-
 }
     
 

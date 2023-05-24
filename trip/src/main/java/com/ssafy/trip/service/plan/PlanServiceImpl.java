@@ -1,5 +1,7 @@
 package com.ssafy.trip.service.plan;
 
+import com.ssafy.trip.dto.place.PlaneDto;
+import com.ssafy.trip.dto.place.RouteDto;
 import com.ssafy.trip.dto.plan.PlanDto;
 import com.ssafy.trip.dto.plan.UserPlanDto;
 import com.ssafy.trip.repository.plan.PlanRepository;
@@ -14,6 +16,16 @@ public class PlanServiceImpl implements PlanService{
 
     public PlanServiceImpl(PlanRepository planRepository) {
         this.planRepository = planRepository;
+    }
+
+    @Override
+    public List<PlanDto> planList() {
+        return planRepository.planList();
+    }
+
+    @Override
+    public List<PlanDto> following_list(String user_id) {
+        return planRepository.following_list(user_id);
     }
 
     @Override
@@ -84,6 +96,21 @@ public class PlanServiceImpl implements PlanService{
     @Override
     public void userPlanDelete(int plan_id) {
         planRepository.userPlanDelete(plan_id);
+    }
+
+    @Override
+    public List<UserPlanDto> planPlace(int plan_id) {
+        return planRepository.planPlace(plan_id);
+    }
+
+    @Override
+    public List<PlaneDto> planPlane(int plan_id) {
+        return planRepository.planPlane(plan_id);
+    }
+
+    @Override
+    public List<RouteDto> planRoute(int plan_id) {
+        return planRepository.planRoute(plan_id);
     }
 
 
