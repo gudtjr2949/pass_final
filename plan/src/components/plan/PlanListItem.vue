@@ -1,9 +1,9 @@
 <template>
   <div class="plan-card">
-    <!-- <router-link :to="`/plan/detail/${plan.plan}`" class="plan-card-link">
+    <router-link :to="`/plan/detail/${plan.plan_id}`" class="plan-card-link">
       <div class="plan-card-image">
         <div class="image-container">
-          <img :src="getImageUrl(plan)" alt="plan Image" class="plan-image" style="width: 200px; height: 150px;"/>
+          <!-- <img :src="getImageUrl(plan)" alt="plan Image" class="plan-image" style="width: 200px; height: 150px;"/> -->
         </div>
       </div>
       <div class="plan-card-title">
@@ -14,7 +14,7 @@
         <p><strong>조회수:</strong> {{ plan.hit }}</p>
         <p><strong>작성일:</strong> {{ plan.register_time }}</p>
       </div>
-    </router-link> -->
+    </router-link>
   </div>
 </template>
   
@@ -27,7 +27,9 @@ export default {
     plan: Object,
   },
   methods: {
+    
     getImageUrl(plan) {
+      console.log(plan)
       console.log(plan);
       return require("@/assets/save_image/" + plan.plan + "/" + plan.first_image);
     },

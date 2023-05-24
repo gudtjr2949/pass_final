@@ -52,20 +52,8 @@ export default {
     return {
       user_id: JSON.parse(sessionStorage.getItem("userInfo")).user_id,
       plans: [],
-      places: [],
-      planes: [],
-      routes: [],
-
       my_plans: [],
-      my_places: [],
-      my_planes: [],
-      my_routes: [],
-
       following_plans: [],
-      following_places: [],
-      following_planes: [],
-      following_routes: [],
-      
       currentPage: 1,
       pageSize: 8,
       activeTab: "",
@@ -74,40 +62,97 @@ export default {
   created() {
     http.get("/plan/api").then((res) => {
       console.log(res);
-      this.plans = res.data.list;
-      let temp = res.data.list;
-      let makePlan = {};
-      temp.forEach((plan, index) => {        
-        let id = plan.plan_id;        
-        http.get("/plan/api/place/" + id)
-        .then((response) => {                    
-          this.places.push(response.data.list)
-        })
+      
+      const requests = res.data.list.map((plan) => {
+      console.log(plan)
+      let id = plan.plan_id;
+      console.log(id)
 
-        http.get("/plan/api/route/" + id)
-        .then((response) => {          
-          this.routes.push(response.data.list)
-        })
+      const placeRequest = http.get("/plan/api/place/" + id);
+      const routeRequest = http.get("/plan/api/route/" + id);
+      const planeRequest = http.get("/plan/api/plane/" + id);
 
-        http.get("/plan/api/plane/" + id)
-        .then((response) => {
-          this.planes.push(response.data.list)
-        }) 
-      })
-      console.log(this.plans);
+      return Promise.all([placeRequest, routeRequest, planeRequest])
+        .then(([placeResponse, routeResponse, planeResponse]) => {
+          const planObject = {
+            plan: plan,
+            places: placeResponse.data.list ? placeResponse.data.list : "",
+            routes: routeResponse.data.list ? routeResponse.data.list : "",
+            planes: planeResponse.data.list ? planeResponse.data.list : "",
+          };
+          return planObject;
+        });
     });
+    return Promise.all(requests);
+  })
+  .then((planObjects) => {    
+    this.plans = planObjects;    
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+
 
     http
       .get("/plan/api/following_plan/" + this.user_id)
       .then((response) => {
-        console.log(response);
-        this.following_plans = response.data.list;
-      });
+      const requests = response.data.list.map((plan) => {
+      let id = plan.plan_id;
+      console.log(id)
+
+      const placeRequest = http.get("/plan/api/place/" + id);
+      const routeRequest = http.get("/plan/api/route/" + id);
+      const planeRequest = http.get("/plan/api/plane/" + id);
+
+      return Promise.all([placeRequest, routeRequest, planeRequest])
+        .then(([placeResponse, routeResponse, planeResponse]) => {
+          const planObject = {
+            plan: plan,
+            places: placeResponse.data.list ? placeResponse.data.list : "",
+            routes: routeResponse.data.list ? routeResponse.data.list : "",
+            planes: planeResponse.data.list ? planeResponse.data.list : "",
+          };
+          return planObject;
+        });
+    });
+    return Promise.all(requests);
+  })
+  .then((planObjects) => {    
+    this.my_plans = planObjects;    
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+
 
     http.get("/plan/api/" + this.user_id).then((response) => {
-      console.log(response);
-      this.my_plans = response.data.list;
+      const requests = response.data.list.map((plan) => {
+      console.log(plan)
+      let id = plan.plan_id;
+      console.log(id)
+      const placeRequest = http.get("/plan/api/place/" + id);
+      const routeRequest = http.get("/plan/api/route/" + id);
+      const planeRequest = http.get("/plan/api/plane/" + id);
+
+      return Promise.all([placeRequest, routeRequest, planeRequest])
+        .then(([placeResponse, routeResponse, planeResponse]) => {
+          const planObject = {
+            plan: plan,
+            places: placeResponse.data.list ? placeResponse.data.list : "",
+            routes: routeResponse.data.list ? routeResponse.data.list : "",
+            planes: planeResponse.data.list ? planeResponse.data.list : "",
+          };
+          return planObject;
+        });
     });
+    return Promise.all(requests);
+  })
+  .then((planObjects) => {    
+    this.following_plans = planObjects;    
+  })
+  .catch((error) => {
+    console.error(error);
+  });
   },
   computed: {
     chunkedplans() {
