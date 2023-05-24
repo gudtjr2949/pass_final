@@ -44,7 +44,6 @@
 
 <script>
 import ReviewListItem from "./ReviewListItem.vue";
-// import axios from "axios";
 import { http } from "@/api/http";
 
 export default {

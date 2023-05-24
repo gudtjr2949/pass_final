@@ -1,18 +1,44 @@
 <template>
-  <div>
-    <div v-for="(chunk, index) in chunkedNotices" :key="index">
-      <notice-list-item
-        v-for="notice in chunk"
-        :key="notice.notice_id"
-        :notice="notice"
-      ></notice-list-item>
+  <div class="notice-list">
+    <div>
+      <router-link to="/notice/write">
+        <button class="write-button">공지글 작성</button>
+      </router-link>
     </div>
-
-    <router-link to="/notice/write">
-      <button class="write-button">글 작성</button>
-    </router-link>
+    <div>
+      <table class="notice-table">
+        <thead>
+          <tr>
+            <th>글 번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>조회수</th>
+            <th>작성 시간</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(chunk, index) in chunkedNotices" :key="index">
+            <td v-for="notice in chunk" :key="notice.notice_id">
+              {{ notice.notice_id }}
+            </td>
+            <td v-for="notice in chunk" :key="notice.notice_id">
+              {{ notice.title }}
+            </td>
+            <td v-for="notice in chunk" :key="notice.notice_id">
+              {{ notice.user_id }}
+            </td>
+            <td v-for="notice in chunk" :key="notice.notice_id">
+              {{ notice.hit }}
+            </td>
+            <td v-for="notice in chunk" :key="notice.notice_id">
+              {{ notice.register_time }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-</template>  
+</template>
   
 <script>
 import NoticeListItem from "./NoticeListItem.vue";
@@ -53,15 +79,51 @@ export default {
 </script>
   
 <style scoped>
+.notice-list {
+  overflow-x: auto;
+  white-space: nowrap;
+  margin: 100px;
+}
+
+.notice-table {
+  width: 90%;
+  border-collapse: collapse;
+}
+
+.notice-table th,
+.notice-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.notice-table th {
+  background-color: #f2f2f2;
+}
+
+.notice-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.notice-table tbody tr:hover {
+  background-color: #e6f7ff;
+  cursor: pointer;
+}
+
 .write-button {
-  position: fixed;
-  top: 20px;
+  /* position: fixed; */
   right: 20px;
   padding: 10px 20px;
-  background-color: #4caf50;
-  color: #fff;
+  background-color: #42a1ff;
+  color: #ffffff;
+  font-weight: bold;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  display: flex;
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  margin-bottom: 16px;
+  /* margin-right: 16px; */
 }
 </style>
