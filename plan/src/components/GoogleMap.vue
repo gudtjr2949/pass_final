@@ -92,7 +92,6 @@
         </div>
         <button class="ui button" @click="drawRoute">그리기</button>
         <button class="ui button" @click="findRoute">최적 경로</button>
-        <button class="ui button">추가</button>
 
         <div v-if="isCheckOpt">
             <button class="ui button" @click="sortByTime">시간</button>
@@ -113,19 +112,14 @@
                     }}
                   </td>
                 </div>
-                <td>
-                  <button
-                    class="ui button"
-                    @click="deleteTimeRoute(route, $event)"
-                  >
-                    삭제
-                  </button>
+                <td>                  
                 </td>
               </div>
             </div>
+            <button class="ui button" @click="addPlanRoute(timeRoute)">추가</button>
           </div>
           <div class="field">
-            <label>총 시간: {{this.timeByTimeH/ 24}} 시간 {{(this.timeByTimeM%24)/60}} 분 총 거리: {{this.disByTime}} km</label>
+            <label>총 시간: {{this.timeByTimeH}} 시간 {{this.timeByTimeM}} 분 총 거리: {{this.disByTime}} km</label>
             </div>            
         </div>
         <div v-if="isCheckOpt && isDis" class="ui segment" style="max-height: 500px; overflow: scroll">
@@ -142,19 +136,14 @@
                     }}
                   </td>
                 </div>
-                <td>
-                  <button
-                    class="ui button"
-                    @click="deleteDisRoute(route, $event)"
-                  >
-                    삭제
-                  </button>
+                <td>              
                 </td>
               </div>
             </div>
+            <button class="ui button" @click="addPlanRoute(disRoute)">추가</button>
           </div>     
           <div class="field">
-            <label>총 시간: {{this.timeByDisH/24}} 시간 {{(this.timeByDisM%24)/60}} 분 총 거리: {{this.disByDis}} km</label>
+            <label>총 시간: {{this.timeByDisH}} 시간 {{this.timeByDisM}} 분 총 거리: {{this.disByDis}} km</label>
             </div>            
         </div>
 
@@ -187,6 +176,7 @@
                 </td>
               </div>
             </div>
+            <button class="ui button" @click="addPlanRoute(addRoute)">추가</button>
           </div>
         </div>
       </div>
@@ -286,7 +276,7 @@
           <td>
             <button class="ui button" @click="drawTransit">그리기</button>
           </td>
-          <td><button class="ui button">추가</button></td>
+          
         </div>
         <div class="field">
           <div class="ui divided items field">
@@ -326,7 +316,7 @@
           <td>
             <button class="ui button" @click="drawDriving">그리기</button>
           </td>
-          <td><button class="ui button">추가</button></td>
+          
         </div>
         <div class="field">
           <div class="ui divided items field">
@@ -361,13 +351,7 @@
               </td>
               <td
                 @click="
-                  centerMap(
-                    hotel.geometry.location.lat,
-                    hotel.geometry.location.lng,
-                    $event
-                  )
-                "
-              >
+                  centerMap(hotel.geometry.location.lat,hotel.geometry.location.lng,$event)">
                 {{ hotel.name ? hotel.name : "-" }}
               </td>
               <td
@@ -474,7 +458,7 @@
             </div>
           </div>
         </div>
-
+        
         <div class="field">
           <div class="two fields">
             <div class="field" v-if="resPlane.length > 0">
@@ -498,7 +482,24 @@
             </div>
             <div class="field" v-if="resRoute.length > 0">
               <label>경로</label>
+              <div class="item" v-for="(routes, index) in resRoute" :key="index">
+                <div class="item" v-for="(route, i) in routes" :key="i">
+
+                     <div class="content">
+                  <a :href="route.url" target="_blank">
+                    <img :src="route.photo" width="50" height="50" />
+                  </a>
+                  <div @click="centerMap(route.lat, route.lng, $event)">
+                    {{
+                      route.formatted_address ? route.formatted_address : "-"
+                    }}
+                  </div>
+                  </div>                    
+                  </div>
+                  <button class="ui button" @click="deleteResRoute(routes, $event)">삭제</button>
+                </div>
             </div>
+            
           </div>
         </div>
 
@@ -868,6 +869,9 @@ export default {
   },
 
   methods: {
+    addPlanRoute(route){
+      this.resRoute.push(route);
+    },
 
     sortByTime(){
       this.isDis = false;
@@ -886,6 +890,8 @@ export default {
       this.isTime = false;
       this.isDis = false;
       const route = {};
+      this.timeRoute = [];
+      this.disRoute = [];
 
       for (var i = 0; i < this.addRoute.length; i++) {
         route[i] = this.addRoute[i];
@@ -906,13 +912,15 @@ export default {
 
           // this.timeByDisH = Math.round(result.orderBy_dis_max_time / 60);
           // this.timeByDisM = Math.round(result.orderBy_dis_max_time % 60);
-
-          this.timeByDisH = Math.floor(result.orderBy_dis_max_time / 60);
-          this.timeByDisM = Math.ceil(result.orderBy_dis_max_time % 60);
+          
+          this.timeByDisH = (result.orderBy_dis_max_time/ 60).toFixed(0);
+          console.log(this.timeByDisH)
+          this.timeByDisM = (result.orderBy_dis_max_time % 60).toFixed(0);
+          console.log(this.timeByDisM)
 
           this.disByTime = result.orderBy_time_max_dis;
-          this.timeByTimeH = Math.round(result.orderBy_time_max_time / 60);
-          this.timeByTimeM = Math.round(result.orderBy_time_max_time % 60);
+          this.timeByTimeH = (result.orderBy_time_max_time / 60).toFixed(0);
+          this.timeByTimeM = (result.orderBy_time_max_time % 60).toFixed(0);
 
           for(var i = 0; i < result.orderByDis.length; i++){
             if (Number(result.orderByDis[i]) || result.orderByDis[i] == '0'){              
@@ -1585,6 +1593,15 @@ export default {
       const index = this.disRoute.indexOf(route);
       if (index > -1) {
         this.disRoute.splice(index, 1);
+      }
+    },
+    deleteResRoute(route, event){
+      event.preventDefault();
+      event.stopPropagation();
+      console.log(route)
+      const index = this.resRoute.indexOf(route);
+      if (index > -1) {
+        this.resRoute.splice(index, 1);
       }
     },
 

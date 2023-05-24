@@ -39,13 +39,13 @@
 </template>
   
 <script>
-import NoticeListItem from "./NoticeListItem.vue";
+// import NoticeListItem from "./NoticeListItem.vue";
 import { http } from "@/api/http";
 
 export default {
   name: "NoticeList",
   components: {
-    NoticeListItem,
+    // NoticeListItem,
   },
   data() {
     return {
