@@ -38,10 +38,11 @@ public class ReviewController {
                                                      @RequestParam("user_id") String user_id,
                                                      @RequestParam("title") String title,
                                                      @RequestParam("content") String content) {
-
+    	
+    	System.out.println("글 입력");
         Map<String, String> res = new HashMap<>();
 
-        String uploadPath = "/Users/leehyungseok/Downloads/plan/src/assets/save_image";
+        String uploadPath = "C:\\Users\\SSAFY\\Desktop\\new\\pass_final\\plan\\src\\assets\\save_image";
 
         try {
             ReviewDto reviewDto = new ReviewDto();
