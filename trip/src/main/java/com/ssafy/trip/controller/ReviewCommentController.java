@@ -10,7 +10,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/review_comment")
-//@CrossOrigin(origins = "http://localhost:8080")
 @CrossOrigin(origins = {})
 public class ReviewCommentController {
 

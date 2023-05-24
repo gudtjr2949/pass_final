@@ -96,6 +96,8 @@ export default {
         this.comments = res.data.comment;
         this.review_id = review_id;
 
+        console.log(res.data.image);
+
         this.userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 
         return http.post("/user/api/checkFollow", {

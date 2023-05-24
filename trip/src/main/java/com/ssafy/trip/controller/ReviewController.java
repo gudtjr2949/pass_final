@@ -17,7 +17,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/review")
-//@CrossOrigin(origins = "http://localhost:8080")
 @CrossOrigin(origins = {})
 public class ReviewController {
 
@@ -39,7 +38,6 @@ public class ReviewController {
                                                      @RequestParam("title") String title,
                                                      @RequestParam("content") String content) {
     	
-    	System.out.println("글 입력");
         Map<String, String> res = new HashMap<>();
 
         String uploadPath = "C:\\Users\\SSAFY\\Desktop\\new\\pass_final\\plan\\src\\assets\\save_image";
@@ -169,16 +167,15 @@ public class ReviewController {
         return ResponseEntity.ok(res);
     }
 
-    @PutMapping("/api/modify/{review_id}")
+    @PutMapping("/api/modify")
     public ResponseEntity<Map<String, String>> modify(@RequestParam(value = "image[]", required = false) List<MultipartFile> images,
                                                       @RequestParam("review_id") int review_id,
                                                       @RequestParam("title") String title,
                                                       @RequestParam("content") String content
-//                                                      @RequestParam(value = "plan_id", required = false) int plan_id
     ) {
         Map<String, String> res = new HashMap<>();
 
-        String uploadPath = "/Users/leehyungseok/Downloads/plan/src/assets/save_image/" + review_id;
+        String uploadPath = "C:\\Users\\SSAFY\\Desktop\\new\\pass_final\\plan\\src\\assets\\save_image\\" + review_id;
 
         try {
             ReviewDto reviewDto = new ReviewDto();
@@ -193,27 +190,28 @@ public class ReviewController {
 
             // 폴더 지우기
             File folder = new File(uploadPath);
+            File[] deleteFolderList = folder.listFiles();
 
-
-            if (!folder.exists()) {
-                folder.mkdirs();
-            } else {
-                folder.delete();
-                folder.mkdirs();
+            for (int i = 0; i < deleteFolderList.length; i++) {
+            	deleteFolderList[i].delete();
             }
 
             for (int i = 0; i < images.size(); i++) {
                 String originalFilename = images.get(i).getOriginalFilename();
-
+                
+                String filePath = uploadPath + File.separator + originalFilename;
+                
                 ImageDto imageDto = new ImageDto();
 
                 imageDto.setReview_id(review_id);
-                imageDto.setImage_path(uploadPath);
+                imageDto.setImage_path(uploadPath + "/" + originalFilename);
                 imageDto.setImage_name(originalFilename);
+                
+                images.get(i).transferTo(new File(filePath));
 
                 list.add(imageDto);
             }
-
+            
             reviewImageService.modify(list);
 
             res.put("resmsg", "후기 게시글 수정 성공");

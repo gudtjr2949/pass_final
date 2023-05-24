@@ -2,7 +2,7 @@
   <div id="app">
     <the-header></the-header>
     <div class="background-container">
-      <img src="@/assets/2.jpeg" class="background-image">
+      <img src="@/assets/2.jpeg" class="background-image" />
     </div>
     <router-view />
     <!-- <the-footer></the-footer> -->
@@ -10,24 +10,22 @@
 </template>
 
 <script>
-import TheHeader from './components/common/TheHeader.vue';
+import TheHeader from "./components/common/TheHeader.vue";
 // import TheFooter from './components/common/TheFooter.vue'
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     TheHeader,
     // TheFooter,
   },
   data() {
     return {
-      showOverlay: true
-    }
+      showOverlay: true,
+    };
   },
-  mounted() {
-
-  },
-}
+  mounted() {},
+};
 </script>
 
 <style scoped>
@@ -36,7 +34,6 @@ export default {
   margin: 0 auto;
   animation: fadein 5s ease 3s;
   -webkit-animation: fadein 3s;
-
   /* Safari and Chrome */
 }
 
@@ -48,11 +45,10 @@ export default {
 
 .background-image {
   width: 100%;
-
+  height: 30%;
   position: absolute;
   object-fit: cover;
   z-index: -1; /* 이미지를 뒤로 보냄 */
-  
 }
 
 @keyframes fadein {
@@ -66,7 +62,6 @@ export default {
 }
 
 @-webkit-keyframes fadein {
-
   /* Safari and Chrome */
   from {
     opacity: 0;

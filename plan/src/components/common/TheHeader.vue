@@ -10,16 +10,18 @@
         <router-link v-if="!userInfo" :to="`/user/login`" class="header-link">
           로그인
         </router-link>
-        <router-link v-if="userInfo" :to="`/user/mypage`" class="header-link">
+        <router-link
+          v-if="userInfo && this.$route.path !== '/user/mypage'"
+          :to="`/user/mypage`"
+          class="header-link"
+        >
           마이페이지
         </router-link>
         <router-link to="/map">지도</router-link>
-        <router-link class="header-link" :to="`/review/list`">
-          후기 게시판
-        </router-link>
-        <router-link class="header-link" :to="`/notice/list`">
-          공지사항</router-link
+        <a class="header-link" @click="checkLogin(`/review/list`)"
+          >후기 게시판</a
         >
+        <a class="header-link" @click="checkLogin(`/notice/list`)">공지사항</a>
       </div>
       <div class="user-info" v-if="userInfo">
         <h3 class="header-user">
@@ -61,10 +63,13 @@ export default {
     checkLogin(path) {
       if (!this.userInfo) {
         alert("로그인 하세요");
-        router.push("/user/login");
+        if (this.$route.path != "/user/login") {
+          router.push("/user/login");
+        }
       } else {
-        console.log("공지사항");
-        router.push(path);
+        if (path != this.$route.path) {
+          router.push(path);
+        }
       }
     },
     Logout() {
@@ -102,6 +107,7 @@ a {
   font-weight: bold;
   margin-right: 30px;
   color: #2c3e50;
+  cursor: pointer; /* 커서를 손가락 모양으로 설정 */
 }
 
 a:hover {

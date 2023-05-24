@@ -1,11 +1,9 @@
 <template>
   <div class="notice-list">
-    <div>
+    <div class="table-container">
       <router-link to="/notice/write">
         <button class="write-button">공지글 작성</button>
       </router-link>
-    </div>
-    <div>
       <table class="notice-table">
         <thead>
           <tr>
@@ -77,24 +75,45 @@ export default {
   methods: {},
 };
 </script>
-  
+
 <style scoped>
 .notice-list {
-  overflow-x: auto;
-  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   margin: 100px;
+  width: 800px;
+  border: 1px solid black;
 }
 
-.notice-table {
-  width: 90%;
-  border-collapse: collapse;
+.table-container {
+  width: 50px;
+  left: 0;
+  right: 0;
+  /* margin-left: auto; */
+  /* margin-right: auto; */
+}
+
+.write-button-container {
+  /* position: absolute; */
+  top: 0;
+  right: 0;
+  margin: 10px;
 }
 
 .notice-table th,
 .notice-table td {
   padding: 8px;
   border-bottom: 1px solid #ddd;
-  text-align: left;
+  text-align: center;
+  height: 80px;
+  border-radius: 4px;
+}
+
+.notice-table {
+  width: auto;
+  margin: 0 auto;
 }
 
 .notice-table th {
@@ -111,8 +130,6 @@ export default {
 }
 
 .write-button {
-  /* position: fixed; */
-  right: 20px;
   padding: 10px 20px;
   background-color: #42a1ff;
   color: #ffffff;
@@ -120,10 +137,11 @@ export default {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  display: flex;
-  /* justify-content: space-between; */
-  /* align-items: center; */
-  margin-bottom: 16px;
-  /* margin-right: 16px; */
+  margin: 10px;
+}
+
+.table-container {
+  width: 90%;
+  position: relative;
 }
 </style>

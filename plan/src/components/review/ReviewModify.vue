@@ -46,9 +46,9 @@
   </div>
 </template>
 <script>
-// import axios from "axios";
 import router from "../../router";
 import { http } from "@/api/http";
+import axios from "axios";
 
 export default {
   data() {
@@ -66,6 +66,9 @@ export default {
       this.title = response.data.review.title;
       this.content = response.data.review.content;
       this.uploadedImages = response.data.image;
+      // this.image = response.data.image;
+
+      console.log(response.data.image);
     });
   },
   methods: {
@@ -91,17 +94,22 @@ export default {
       const formData = new FormData();
       const imageFiles = this.image;
 
+      console.log(imageFiles[0]);
+      console.log(imageFiles[1]);
+
       for (let i = 0; i < imageFiles.length; i++) {
         formData.append("image[]", imageFiles[i]);
       }
 
       formData.append("title", this.$refs.title.value);
       formData.append("content", this.$refs.content.value);
-      formData.append("review_id", this.review_id);
+      formData.append("review_id", this.$route.params.review_id);
 
-      http.put(`/review/api/modify/${this.review_id}`, formData).then(() => {
-        router.push(`/review/detail/${this.review_id}`);
-      });
+      axios
+        .put(`http://192.168.208.54:80/review/api/modify`, formData)
+        .then(() => {
+          router.push(`/review/detail/${this.review_id}`);
+        });
     },
     onInputImage() {
       const selectedFiles = Array.from(this.$refs.image.files);
