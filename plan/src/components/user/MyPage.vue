@@ -25,12 +25,18 @@
         {{ following.length }}
       </router-link>
     </div>
+    <div>
+      <router-link to="/user/modify">
+        <button>회원정보 수정</button>
+      </router-link>
+      <button @click="deleteUser">회원탈퇴</button>
+    </div>
   </div>
 </template>
   
 <script>
 // import axios from "axios";
-// import router from "../../router";
+import router from "../../router";
 import { http } from "@/api/http";
 
 export default {
@@ -63,6 +69,16 @@ export default {
       console.log(this.mylist);
     });
   },
+
+  methods: {
+    deleteUser() {
+      sessionStorage.removeItem("userInfo");
+      http.delete(`/user/api/delete/${this.user.user_id}`).then(() => {
+        router.push("/");
+        this.$router.go(this.$router.currentRoute);
+      })
+    }
+  }
 };
 </script>
   

@@ -21,8 +21,8 @@
 
     <insert id="write" parameterType="reviewCommentDto">
         insert into review_comment
-        (review_id, user_id, content, `like`)
-        values (#{review_id}, #{user_id}, #{content}, '0')
+        (review_id, user_id, content)
+        values (#{review_id}, #{user_id}, #{content})
     </insert>
 
     <select id="list" parameterType="int" resultMap="reviewCommentMap">

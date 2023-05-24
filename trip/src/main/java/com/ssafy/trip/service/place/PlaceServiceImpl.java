@@ -1,7 +1,6 @@
 	
 package com.ssafy.trip.service.place;
 
-import com.ssafy.trip.dto.place.RouteDto;
 import com.ssafy.trip.dto.place.PlaceDto;
 import com.ssafy.trip.dto.place.PlanPlaceDto;
 import com.ssafy.trip.repository.place.PlaceRepository;

@@ -69,7 +69,6 @@
   </div>
 </template>
 <script>
-// import axios from "axios";
 import { http } from "@/api/http";
 
 export default {
@@ -140,7 +139,12 @@ export default {
       this.comments.push(comment);
       this.newComment = "";
       // 여기서 서버로 댓글을 보내는 요청(axios 등)을 보내면 됩니다.
-      http.post("/review_comment/api/write", comment);
+      http.post("/review_comment/api/write", {
+        review_id: this.review_id,
+        user_id: JSON.parse(sessionStorage.getItem("userInfo")).user_id,
+        content: this.$refs.content.value,
+      });
+      // axios.post("http://localhost:80/review_comment/api/write", comment)
     },
     toggleLike(comment) {
       comment.liked = !comment.liked;
