@@ -37,7 +37,7 @@ public class ReviewController {
                                                      @RequestParam("user_id") String user_id,
                                                      @RequestParam("title") String title,
                                                      @RequestParam("content") String content,
-                                                     @RequestParam("plan_id") int plan_id) {
+                                                     @RequestParam(value = "plan_id", required = false) int plan_id) {
     	
         Map<String, String> res = new HashMap<>();
 
@@ -49,6 +49,7 @@ public class ReviewController {
             reviewDto.setUser_id(user_id);
             reviewDto.setTitle(title);
             reviewDto.setContent(content);
+            
             reviewDto.setPlan_id(plan_id);
 
             reviewDto.setFirst_image(images.get(0).getOriginalFilename());

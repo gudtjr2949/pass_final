@@ -2,7 +2,14 @@
   <div id="app">
     <the-header></the-header>
     <div class="background-container">
-      <img src="@/assets/main2.jpg" class="background-image" />
+      <!-- <img src="@/assets/main5.jpg" class="background-image" /> -->
+      <div class="bg-video">
+        <video class="bg-video__content" autoplay muted loop>
+          <source src="@/assets/airplain.mp4" type="video/mp4" />
+          <!-- <source src="img/video.webm" type="video/webm" /> -->
+          Your browser is not supported!
+        </video>
+      </div>
     </div>
     <router-view />
     <!-- <the-footer></the-footer> -->
@@ -24,7 +31,15 @@ export default {
       showOverlay: true,
     };
   },
-  mounted() {},
+  mounted() {
+    this.setVideoPlaybackRate();
+  },
+  methods: {
+    setVideoPlaybackRate() {
+      const video = document.querySelector(".bg-video__content");
+      video.playbackRate = 0.65; // 0.5의 재생 속도로 설정
+    },
+  },
 };
 </script>
 
@@ -49,6 +64,22 @@ export default {
   position: absolute;
   object-fit: cover;
   z-index: -2; /* 이미지를 뒤로 보냄 */
+}
+
+.bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.bg-video__content {
+  height: 100%;
+  width: 100%;
+  object-fit: cover; /* background-size: cover 와 비슷함. (HTML 요소 or 비디오와 작동) */
 }
 
 @keyframes fadein {
