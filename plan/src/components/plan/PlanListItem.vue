@@ -2,8 +2,12 @@
   <div class="plan-card">
     <router-link :to="`/plan/detail/${plan.plan_id}`" class="plan-card-link">
       <div class="plan-card-image">
-        <div class="image-container">
-          <!-- <img :src="getImageUrl(plan)" alt="plan Image" class="plan-image" style="width: 200px; height: 150px;"/> -->
+         <div class="image-container" v-if="places && places.length && places[0].photo">                    
+          <img :src="places[0].photo"  alt="plan Image" class="plan-image" style="width: 400px; height: 150px;"/>
+        </div>
+        <div class="image-container" v-else>
+          <!-- Display a default image when places[0].photo is not available -->
+          <img src="@/assets/pngwing.png" alt="Default Image" class="plan-image" style="width: 400px; height: 150px;"/>
         </div>
       </div>
       <div class="plan-card-title">
@@ -20,19 +24,36 @@
   
 <script>
 // import axios from 'axios';
+import { http } from "@/api/http";
 
 export default {
   name: "PlanListItem",
   props: {
-    plan: Object,
+    plan: Object,    
   },
-  methods: {
-    
-    getImageUrl(plan) {
-      console.log(plan)
-      console.log(plan);
-      return require("@/assets/save_image/" + plan.plan + "/" + plan.first_image);
+  data() {
+    return {
+      user_id: JSON.parse(sessionStorage.getItem("userInfo")).user_id,
+      places: [],
+    };
+  },
+  created() {
+      if (this.plan && this.plan.plan_id) {
+        this.fetchPlaces();
+      }
     },
+
+  methods: {
+    fetchPlaces() {
+      http.get("/plan/api/place/" + this.plan.plan_id)
+        .then((res) => {
+          console.log(res.data.list)
+          this.places = res.data.list;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },    
   }
 };
 </script>

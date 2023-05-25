@@ -338,7 +338,6 @@
         <table>
           <thead>
             <th>사진</th>
-            <th>이름</th>
             <th>주소</th>
             <th>추가</th>
           </thead>
@@ -352,18 +351,7 @@
               <td
                 @click="
                   centerMap(hotel.geometry.location.lat,hotel.geometry.location.lng,$event)">
-                {{ hotel.name ? hotel.name : "-" }}
-              </td>
-              <td
-                @click="
-                  centerMap(
-                    hotel.geometry.location.lat,
-                    hotel.geometry.location.lng,
-                    $event
-                  )
-                "
-              >
-                {{ hotel.vicinity ? hotel.vicinity : "-" }}
+                {{ hotel.formatted_address ? hotel.formatted_address : "-" }}
               </td>
               <td>
                 <button class="ui button" @click="makePlan(hotel)">추가</button>
@@ -384,7 +372,6 @@
         <table>
           <thead>
             <th>사진</th>
-            <th>이름</th>
             <th>주소</th>
             <th>추가</th>
           </thead>
@@ -404,18 +391,7 @@
                   )
                 "
               >
-                {{ place.name ? place.name : "-" }}
-              </td>
-              <td
-                @click="
-                  centerMap(
-                    place.geometry.location.lat,
-                    place.geometry.location.lng,
-                    $event
-                  )
-                "
-              >
-                {{ place.vicinity ? place.vicinity : "-" }}
+                {{ place.formatted_address ? place.formatted_address : "-" }}
               </td>
               <td>
                 <button class="ui button" @click="makePlan(place)">추가</button>
@@ -533,18 +509,7 @@
                   )
                 "
               >
-                {{ plan.name ? plan.name : "-" }}
-              </td>
-              <td
-                @click="
-                  centerMap(
-                    plan.geometry.location.lat,
-                    plan.geometry.location.lng,
-                    $event
-                  )
-                "
-              >
-                {{ plan.vicinity ? plan.vicinity : "-" }}
+                {{ plan.formatted_address ? plan.formatted_address : "-" }}
               </td>
               <td>
                 <button class="ui button" @click="deletePlan(plan, $event)">
@@ -564,7 +529,9 @@
           ></textarea>
         </div>
       </form>
+      <router-link :to="`/plan/list`" class="plan-card-link">
       <button class="ui button" @click="submitForm">작성</button>
+      </router-link>
     </div>
   </div>
 </template>

@@ -15,6 +15,7 @@ import Modify from "@/components/user/UserModify"
 
 // Plan
 import PlanList from "@/components/plan/PlanList"
+import PlanDetail from "@/components/plan/PlanDetail"
 
 // Review
 import ReviewWrite from "@/components/review/ReviewWrite"
@@ -83,6 +84,10 @@ export default new Router({
     {
       path: '/plan/list',
       component: PlanList
+    },
+    {
+      path: '/plan/detail/:plan_id',
+      component: PlanDetail
     },
     {
       path: '/review/list',

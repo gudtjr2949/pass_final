@@ -25,16 +25,8 @@
         </button>
       </div>    
     </div>
-    <div
-      v-for="(chunk, index) in chunkedplans"
-      :key="index"
-      class="plan-row"
-    >
-      <plan-list-item
-        v-for="plan in chunk"
-        :key="plan.plan"
-        :plan="plan"
-      ></plan-list-item>
+    <div v-for="(chunk, index) in chunkedplans" :key="index" class="plan-row">
+      <plan-list-item v-for="plan in chunk" :key="plan.plan_id" :plan="plan"></plan-list-item>
     </div>
   </div>
 </template>
@@ -61,97 +53,17 @@ export default {
   },
   created() {
     http.get("/plan/api").then((res) => {
-      console.log(res);
-      
-      const requests = res.data.list.map((plan) => {
-      console.log(plan)
-      let id = plan.plan_id;
-      console.log(id)
-
-      const placeRequest = http.get("/plan/api/place/" + id);
-      const routeRequest = http.get("/plan/api/route/" + id);
-      const planeRequest = http.get("/plan/api/plane/" + id);
-
-      return Promise.all([placeRequest, routeRequest, planeRequest])
-        .then(([placeResponse, routeResponse, planeResponse]) => {
-          const planObject = {
-            plan: plan,
-            places: placeResponse.data.list ? placeResponse.data.list : "",
-            routes: routeResponse.data.list ? routeResponse.data.list : "",
-            planes: planeResponse.data.list ? planeResponse.data.list : "",
-          };
-          return planObject;
-        });
-    });
-    return Promise.all(requests);
-  })
-  .then((planObjects) => {    
-    this.plans = planObjects;    
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+      this.plans = res.data.list;
+      });
 
 
-    http
-      .get("/plan/api/following_plan/" + this.user_id)
-      .then((response) => {
-      const requests = response.data.list.map((plan) => {
-      let id = plan.plan_id;
-      console.log(id)
-
-      const placeRequest = http.get("/plan/api/place/" + id);
-      const routeRequest = http.get("/plan/api/route/" + id);
-      const planeRequest = http.get("/plan/api/plane/" + id);
-
-      return Promise.all([placeRequest, routeRequest, planeRequest])
-        .then(([placeResponse, routeResponse, planeResponse]) => {
-          const planObject = {
-            plan: plan,
-            places: placeResponse.data.list ? placeResponse.data.list : "",
-            routes: routeResponse.data.list ? routeResponse.data.list : "",
-            planes: planeResponse.data.list ? planeResponse.data.list : "",
-          };
-          return planObject;
-        });
-    });
-    return Promise.all(requests);
-  })
-  .then((planObjects) => {    
-    this.my_plans = planObjects;    
-  })
-  .catch((error) => {
-    console.error(error);
+    http.get("/plan/api/following_plan/" + this.user_id).then((response) => {
+      this.following_plans = response.data.list;
   });
 
 
     http.get("/plan/api/" + this.user_id).then((response) => {
-      const requests = response.data.list.map((plan) => {
-      console.log(plan)
-      let id = plan.plan_id;
-      console.log(id)
-      const placeRequest = http.get("/plan/api/place/" + id);
-      const routeRequest = http.get("/plan/api/route/" + id);
-      const planeRequest = http.get("/plan/api/plane/" + id);
-
-      return Promise.all([placeRequest, routeRequest, planeRequest])
-        .then(([placeResponse, routeResponse, planeResponse]) => {
-          const planObject = {
-            plan: plan,
-            places: placeResponse.data.list ? placeResponse.data.list : "",
-            routes: routeResponse.data.list ? routeResponse.data.list : "",
-            planes: planeResponse.data.list ? planeResponse.data.list : "",
-          };
-          return planObject;
-        });
-    });
-    return Promise.all(requests);
-  })
-  .then((planObjects) => {    
-    this.following_plans = planObjects;    
-  })
-  .catch((error) => {
-    console.error(error);
+      this.my_plans = response.data.list;
   });
   },
   computed: {
@@ -179,7 +91,7 @@ export default {
         chunks.push(tmp_plans.slice(index, index + chunkSize));
         index += chunkSize;
       }
-
+      
       return chunks;
     },
 
@@ -198,7 +110,7 @@ export default {
         return this.following_plans;
       } else if (this.activeTab === "my") {
         return this.my_plans;
-      } else {
+      } else {        
         return this.plans;
       }
     },
