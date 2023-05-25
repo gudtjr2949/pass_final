@@ -7,7 +7,7 @@
           <h5 class="author-name">작성자 : {{ notice.user_id }}</h5>
         </div>
         <div>
-          <router-link :to="`/notice/modify/${this.notice_id}`">
+          <router-link :to="`/notice/modify/${this.notice_id}`" v-if="isAdmin">
             <button class="modify-btn">수정</button>
           </router-link>
         </div>
@@ -27,6 +27,7 @@ export default {
       notice: {},
       notice_id: "",
       userInfo: {},
+      isAdmin: "",
     };
   },
   created() {
@@ -37,6 +38,19 @@ export default {
       this.notice = response.data.notice;
       console.log(this.notice);
     });
+
+    axios
+      .get(
+        "http://192.168.208.54:80/user/api/checkAdmin/" +
+          JSON.parse(sessionStorage.getItem("userInfo")).user_id
+      )
+      .then((response) => {
+        if (response.data.check) {
+          this.isAdmin = true;
+        } else {
+          this.isAdmin = false;
+        }
+      });
   },
 };
 </script>

@@ -5,7 +5,7 @@
       <input type="text" id="title" ref="title" class="form-control" />
     </div>
     <div class="form-group">
-      <label for="title">계획</label>
+      <label for="title">내가 작성한 계획</label>
       <div class="plan-list">
         <div v-for="plan in plan_list" :key="plan.plan_id">
           <input
@@ -66,6 +66,7 @@ export default {
     };
   },
   created() {
+    this.user_id = JSON.parse(sessionStorage.getItem("userInfo")).user_id;
     http.get(`/plan/api/${this.user_id}`).then((response) => {
       this.plan_list = response.data.list;
       console.log(this.plan_list);

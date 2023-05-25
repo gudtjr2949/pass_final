@@ -3,9 +3,13 @@
     <div class="review-container">
       <div class="review-header">
         <div class="review-title">{{ review.title }}</div>
-        <div class="bookmark-icon">
-          <!-- 북마크 아이콘 또는 이미지 등 원하는 내용으로 대체 -->
+        <!-- <div class="bookmark-icon">
           계획 글 : <i class="fas fa-bookmark">{{ review.plan_id }}</i>
+        </div> -->
+        <div class="bookmark-icon" v-if="this.existPlan">
+          <router-link :to="`/plan/detail/${review.plan_id}`"
+            >여행 계획 글</router-link
+          >
         </div>
         <div class="author-info">
           <h5 class="author-name">작성자 : {{ review.user_id }}</h5>
@@ -18,7 +22,7 @@
             </div>
           </div>
         </div>
-        <div>
+        <div v-if="idCheck == true">
           <router-link :to="`/review/modify/${review_id}`">
             <button class="modify-btn">수정</button>
           </router-link>
@@ -84,6 +88,7 @@ export default {
       idCheck: "", // 현재 로그인되어 있는 계정과 review.user_id가 다른지 확인
       followCheck: "", // 현재 로그인되어 있는 계정이 review.user_id를 팔로우 했는지 확인
       userInfo: {},
+      existPlan: false,
     };
   },
   created() {
@@ -96,6 +101,10 @@ export default {
         this.image = res.data.image;
         this.comments = res.data.comment;
         this.review_id = review_id;
+
+        if (res.data.review.plan_id != 0) {
+          this.existPlan = true;
+        }
 
         console.log(res.data.image);
 
