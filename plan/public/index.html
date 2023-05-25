@@ -8,6 +8,12 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css"
     />
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        // 오류 처리 로직 작성
+        console.error("Script error:", message);
+      };
+    </script>
     <script
       src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyC5Wsfp6CnCn4wltag9i5XrDNGvOwipkiY&callback=initMap"
       async
