@@ -64,8 +64,8 @@
 
     <insert id="insertPlane" parameterType="PlaneDto">
         insert into plan_plane
-        (plan_id, departure, arrival, price, carrierCode, numberOfBookableSeats, numberOfStops, sequence)
-        values(#{plan_id}, #{departure}, #{arrival}, #{price},#{carrierCode}, #{numberOfBookableSeats}, #{numberOfStops}, #{sequence})
+        (plan_id, departure, arrival, price, carrierCode, numberOfBookableSeats, numberOfStops, sequence, start, end)
+        values(#{plan_id}, #{departure}, #{arrival}, #{price},#{carrierCode}, #{numberOfBookableSeats}, #{numberOfStops}, #{sequence}, #{start}, #{end})
     </insert>
 
     <insert id="insertRoute" parameterType="RouteDto">
@@ -96,7 +96,9 @@
         carrierCode = #{carrierCode},
         numberOfBookableSeats = #{numberOfBookableSeats},
         numberOfStops = #{numberOfStops},
-        sequence = #{sequence}
+        sequence = #{sequence},
+        start = #{start},
+        end = #{end}
         where plan_id = #{plan_id};
     </update>
 

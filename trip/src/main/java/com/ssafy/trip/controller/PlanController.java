@@ -212,6 +212,8 @@ public class PlanController {
                     planeDto.setNumberOfBookableSeats(dto.get("numberOfBookableSeats").toString());
                     planeDto.setNumberOfStops(dto.get("numberOfStops").toString());
                     planeDto.setPlan_id(plan_id);
+                    planeDto.setStart((String)dto.get("start"));
+                    planeDto.setEnd((String)dto.get("end"));
                     planeDto.setSequence(idx++);
 
                     placeService.insertPlane(planeDto);
@@ -379,6 +381,8 @@ public class PlanController {
                     planeDto.setNumberOfStops(dto.get("numberOfStops").toString());
                     planeDto.setPlan_id(plan_id);
                     planeDto.setSequence(idx++);
+                    planeDto.setStart((String)dto.get("start"));
+                    planeDto.setEnd((String)dto.get("end"));
 
                     placeService.insertPlane(planeDto);
                 }

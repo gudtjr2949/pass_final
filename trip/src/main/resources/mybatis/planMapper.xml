@@ -34,6 +34,8 @@
         <result column="numberOfBookableSeats" property="numberOfBookableSeats" jdbcType="VARCHAR" javaType="String" />
         <result column="numberOfStops" property="numberOfStops" jdbcType="VARCHAR" javaType="String" />
         <result column="sequence" property="sequence" jdbcType="INTEGER" javaType="int" />
+        <result column="start" property="start" jdbcType="VARCHAR" javaType="String" />
+        <result column="end" property="end" jdbcType="VARCHAR" javaType="String" />
     </resultMap>
 
     <resultMap id="RouteDtoMap" type="RouteDto">

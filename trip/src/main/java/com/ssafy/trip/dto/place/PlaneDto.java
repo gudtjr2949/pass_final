@@ -13,7 +13,8 @@ public class PlaneDto {
     private String numberOfBookableSeats;
     private String numberOfStops;
     private int sequence;
-
+    private String start;
+    private String end;
 
 
 }
