@@ -95,7 +95,7 @@ public class PlanController {
         try {
             List<PlanDto> list = planService.following_list(user_id);
             map.put("list", list);
-
+            System.out.println(list);
             return new ResponseEntity<>(map, HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
@@ -110,25 +110,25 @@ public class PlanController {
     ResponseEntity<Map<String, Object>> planListByUserId(@PathVariable String user_id){
 
         Map<String, Object> map = new HashMap<>();
-        List<PlanInfoDto> list = new ArrayList<>();
+//        List<PlanInfoDto> list = new ArrayList<>();
 
         try {
-            List<PlanDto> planDtoList = planService.listByUserId(user_id);
+            List<PlanDto> list = planService.listByUserId(user_id);
 
-            for (PlanDto planDto : planDtoList) {
-                PlanInfoDto planInfoDto = new PlanInfoDto();
-                int plan_id = planDto.getPlan_id();
-                List<PlaceDto> placeDtoList = new ArrayList<>();
-                List<String> idList = placeService.placeIdByPlanId(plan_id);
-                for (String id : idList) {
-                    PlaceDto placeDto = placeService.infoByPlaceId(id);
-                    placeDtoList.add(placeDto);
-                }
-                planInfoDto.setPlanDto(planDto);
-                planInfoDto.setPlaceDtoList(placeDtoList);
-
-                list.add(planInfoDto);
-            }
+//            for (PlanDto planDto : planDtoList) {
+//                PlanInfoDto planInfoDto = new PlanInfoDto();
+//                int plan_id = planDto.getPlan_id();
+//                List<PlaceDto> placeDtoList = new ArrayList<>();
+//                List<String> idList = placeService.placeIdByPlanId(plan_id);
+//                for (String id : idList) {
+//                    PlaceDto placeDto = placeService.infoByPlaceId(id);
+//                    placeDtoList.add(placeDto);
+//                }
+//                planInfoDto.setPlanDto(planDto);
+//                planInfoDto.setPlaceDtoList(placeDtoList);
+//
+//                list.add(planInfoDto);
+//            }
             map.put("list", list);
             return new ResponseEntity<>(map, HttpStatus.OK);
         }catch (Exception e){
@@ -419,16 +419,16 @@ public class PlanController {
         int plan_id = Integer.parseInt(id);
         try {
             PlanDto planDto = planService.detailByPlanId(plan_id);
-            List<String> idList = placeService.placeIdByPlanId(plan_id);
-            List<PlaceDto> list = new ArrayList<>();
-            for (String place_id : idList) {
-                PlaceDto placeDto = placeService.infoByPlaceId(place_id);
-                list.add(placeDto);
-            }
-            planInfoDto.setPlanDto(planDto);
-            planInfoDto.setPlaceDtoList(list);
+//            List<String> idList = placeService.placeIdByPlanId(plan_id);
+//            List<PlaceDto> list = new ArrayList<>();
+//            for (String place_id : idList) {
+//                PlaceDto placeDto = placeService.infoByPlaceId(place_id);
+//                list.add(placeDto);
+//            }
+//            planInfoDto.setPlanDto(planDto);
+//            planInfoDto.setPlaceDtoList(list);
 
-            map.put("planInfo", planInfoDto);
+            map.put("plan", planDto);
             return new ResponseEntity<>(map, HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -76,7 +76,7 @@
         order by register_time;
     </select>
 
-    <select id="following_list" resultMap="PlanDtoMap">
+    <select id="following_list" parameterType="String" resultMap="PlanDtoMap">
         select *
         from travel_plan
         where store like "YES"
@@ -89,6 +89,7 @@
         select *
         from travel_plan
         where user_id = #{user_id}
+        and store like "YES"
         order by register_time desc;
     </select>
 
