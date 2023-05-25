@@ -72,7 +72,8 @@
     <div class="item-container">
       <div v-for="plane in planes" :key="plane.plane_id" class="plane-item">
         <div class="plane-info">
-          <h5 class="plane-name">{{ plane.arrival }} -> {{ plane.departure }}</h5>
+          <h5 class="plane-name">{{ plane.start }} -> {{ plane.end }}</h5>
+          <p class="plane-name">{{ plane.arrival }} -> {{ plane.departure }}</p>
           <p class="plane-description">항공: {{ plane.carrierCode }}</p>
           <p class="plane-description">가격 : {{ plane.price }}</p>
         </div>

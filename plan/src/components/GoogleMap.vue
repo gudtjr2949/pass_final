@@ -1312,10 +1312,25 @@ export default {
         .then((data) => {
           // console.log(data); // 반환된 데이터를 원하는 방식으로 처리
           let airInfo = data;
-          // console.log(data.meta)
-          // console.log(airInfo.dictionaries.carriers);
 
-          // console.log(airInfo.dictionaries.carriers['OZ']);
+          let start = this.departureAirport;
+          let end = this.arrivalAirport
+
+          for (let i = 0; i < this.airports.length; i++) {
+          if (this.airports[i].code === this.departureAirport) {
+            start = this.airports[i].name;
+            break;
+          }
+        }
+
+        for (let i = 0; i < this.airports.length; i++) {
+          if (this.airports[i].code === this.arrivalAirport) {
+            end = this.airports[i].name;
+            break;
+          }
+        }
+
+          
           for (var i = 0; i < data.meta.count; i++) {
             let info = data.data[i];
             // console.log(info);
@@ -1329,6 +1344,7 @@ export default {
             let arrival = detail.arrival.at;
             let numberOfStops = detail.numberOfStops;
 
+
             let airInfos = [
               {
                 departure,
@@ -1337,6 +1353,8 @@ export default {
                 carrierCode,
                 numberOfBookableSeats,
                 numberOfStops,
+                start,
+                end
               },
             ];
             this.planes.push(airInfos);
