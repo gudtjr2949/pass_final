@@ -72,7 +72,7 @@ public class NoticeController {
         try {
             NoticeDto noticeDto = noticeService.select(notice_id);
             res.put("notice", noticeDto);
-
+            
             noticeService.updateHit(notice_id);
             res.put("resmsg", "공지 게시글 조회 성공");
         } catch (Exception e) {
@@ -92,6 +92,8 @@ public class NoticeController {
             NoticeDto noticeDto = new NoticeDto();
             noticeDto.setTitle(map.get("title"));
             noticeDto.setContent(map.get("content"));
+            noticeDto.setNotice_id(Integer.parseInt(map.get("notice_id")));
+            System.out.println(noticeDto);
 
             noticeService.modify(noticeDto);
 

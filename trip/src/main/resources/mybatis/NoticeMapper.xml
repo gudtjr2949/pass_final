@@ -49,7 +49,7 @@
 
     <update id="modify" parameterType="noticeDto">
         update notice
-        set title   = #{title},
+        set title = #{title},
         content = #{content}
         where notice_id = #{notice_id}
     </update>

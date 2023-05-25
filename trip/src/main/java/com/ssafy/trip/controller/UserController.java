@@ -119,7 +119,7 @@ public class UserController {
         }
 
         // Vue.js의 Main 페이지로 리다이렉트
-        String redirectUrl = "http://192.168.0.7:8080?user_id=" + userDto.getUser_id() + "&user_name=" +URLEncoder.encode(userDto.getUser_name(), String.valueOf(StandardCharsets.UTF_8));
+        String redirectUrl = "http://192.168.208.54:8080?user_id=" + userDto.getUser_id() + "&user_name=" +URLEncoder.encode(userDto.getUser_name(), String.valueOf(StandardCharsets.UTF_8));
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION, redirectUrl)
                 .body(res);

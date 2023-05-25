@@ -36,20 +36,21 @@ public class ReviewController {
     public ResponseEntity<Map<String, String>> write(@RequestParam(value = "image[]", required = false) List<MultipartFile> images,
                                                      @RequestParam("user_id") String user_id,
                                                      @RequestParam("title") String title,
-                                                     @RequestParam("content") String content) {
+                                                     @RequestParam("content") String content,
+                                                     @RequestParam("plan_id") int plan_id) {
     	
         Map<String, String> res = new HashMap<>();
 
-//        String uploadPath = "C:\\Users\\SSAFY\\Desktop\\new\\pass_final\\plan\\src\\assets\\save_image";
-        String uploadPath = "/Users/leehyungseok/Desktop/SSAFY/pass_final/pass_final/plan/src/assets/save_image";
+        String uploadPath = "C:\\Users\\SSAFY\\Desktop\\new\\pass_final\\plan\\src\\assets\\save_image";
+//        String uploadPath = "/Users/leehyungseok/Desktop/SSAFY/pass_final/pass_final/plan/src/assets/save_image";
         try {
             ReviewDto reviewDto = new ReviewDto();
 
             reviewDto.setUser_id(user_id);
             reviewDto.setTitle(title);
             reviewDto.setContent(content);
+            reviewDto.setPlan_id(plan_id);
 
-            System.out.println(images.get(0).getOriginalFilename());
             reviewDto.setFirst_image(images.get(0).getOriginalFilename());
 
             reviewService.write(reviewDto);
@@ -175,8 +176,8 @@ public class ReviewController {
     ) {
         Map<String, String> res = new HashMap<>();
 
-//        String uploadPath = "C:\\Users\\SSAFY\\Desktop\\new\\pass_final\\plan\\src\\assets\\save_image\\" + review_id;
-        String uploadPath = "/Users/leehyungseok/Desktop/SSAFY/pass_final/pass_final/plan/src/assets/save_image" + review_id;
+        String uploadPath = "C:\\Users\\SSAFY\\Desktop\\new\\pass_final\\plan\\src\\assets\\save_image\\" + review_id;
+//        String uploadPath = "/Users/leehyungseok/Desktop/SSAFY/pass_final/pass_final/plan/src/assets/save_image" + review_id;
 
         try {
             ReviewDto reviewDto = new ReviewDto();
@@ -240,7 +241,8 @@ public class ReviewController {
     @DeleteMapping("/api/delete/{review_id}")
     public ResponseEntity<Map<String, String>> delete(@PathVariable("review_id") int review_id) {
         Map<String, String> res = new HashMap<>();
-
+        System.out.println(review_id);
+        
         try {
             reviewService.delete(review_id);
             res.put("resmsg", "후기 게시글 삭제 성공");

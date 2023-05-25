@@ -1,33 +1,43 @@
 <template>
-    <div>
-    <router-link :to="`/notice/detail/${notice.notice_id}`">
-      <div>
-        <h3>{{ notice.title }}</h3>
-      </div>
-      <div>
-        <p><strong>작성자:</strong> {{ notice.user_id }}</p>
-        <p><strong>조회수:</strong> {{ notice.hit }}</p>
-        <p><strong>작성일:</strong> {{ notice.register_time }}</p>
-      </div>
-    </router-link>
-  </div>
+  <tr class="notice-list-item">
+    <td>{{ notice.notice_id }}</td>
+    <td>
+      <router-link
+        :to="`/notice/detail/${notice.notice_id}`"
+        class="notice-title"
+      >
+        {{ notice.title }}
+      </router-link>
+    </td>
+    <td>{{ notice.user_id }}</td>
+    <td>{{ notice.hit }}</td>
+    <td>{{ notice.register_time }}</td>
+  </tr>
 </template>
-    
-<script>
-// import axios from 'axios';
 
+<script>
 export default {
-    name: "NoticeListItem",
-    props: {
-        notice: Object,
-    },
-    methods: {
-      
-    }
+  name: "NoticeListItem",
+  props: {
+    notice: Object,
+  },
 };
 </script>
-    
-<style scoped>
 
+<style scoped>
+.notice-list-item {
+  background-color: #f7f7f7;
+  text-align: center;
+  height: 70px;
+}
+
+.notice-title {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.notice-title:hover {
+  color: #0056b3;
+}
 </style>
-  

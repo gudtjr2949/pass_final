@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h3>Following_List</h3>
+  <div class="following-list">
+    <h3>Following List</h3>
     <!-- <ul> -->
     <div
       v-for="following in followingList"
@@ -38,6 +38,12 @@ export default {
 </script>
   
 <style scoped>
+.following-list {
+  margin-block: 100px;
+  margin-inline: 400px;
+  text-align: center;
+}
+
 .following-item {
   margin-bottom: 10px;
 }

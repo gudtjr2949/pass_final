@@ -1,46 +1,48 @@
 <template>
-  <div class="notice-list">
-    <div class="table-container">
-      <router-link to="/notice/write" v-if="this.idCheck">
-        <button class="write-button">공지글 작성</button>
+  <div class="notice-list-container">
+    <h1 class="underline">공지사항</h1>
+    <div class="add-button-container">
+      <router-link to="/notice/write" v-if="isAdmin">
+        <button class="add-button">글 등록</button>
       </router-link>
-      <table class="notice-table">
+    </div>
+    <div v-if="notices.length">
+      <table id="notice-list">
+        <colgroup>
+          <col style="width: 5%" />
+          <col style="width: 65%" />
+          <col style="width: 10%" />
+          <col style="width: 5%" />
+          <col style="width: 15%" />
+        </colgroup>
         <thead>
           <tr>
-            <th>글 번호</th>
+            <th>번호</th>
             <th>제목</th>
             <th>작성자</th>
             <th>조회수</th>
-            <th>작성 시간</th>
+            <th>작성일</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(chunk, index) in chunkedNotices" :key="index">
-            <td v-for="notice in chunk" :key="notice.notice_id">
-              {{ notice.notice_id }}
-            </td>
-            <td v-for="notice in chunk" :key="notice.notice_id">
-              {{ notice.title }}
-            </td>
-            <td v-for="notice in chunk" :key="notice.notice_id">
-              {{ notice.user_id }}
-            </td>
-            <td v-for="notice in chunk" :key="notice.notice_id">
-              {{ notice.hit }}
-            </td>
-            <td v-for="notice in chunk" :key="notice.notice_id">
-              {{ notice.register_time }}
-            </td>
-          </tr>
+          <notice-list-item
+            v-for="notice in notices"
+            v-bind:key="notice.notice_id"
+            v-bind:notice="notice"
+          ></notice-list-item>
         </tbody>
       </table>
     </div>
+    <div v-else>
+      <div class="text-center">게시글이 없습니다.</div>
+    </div>
   </div>
 </template>
-  
+
 <script>
-import NoticeListItem from "./NoticeListItem.vue";
 import { http } from "@/api/http";
+import NoticeListItem from "./NoticeListItem.vue";
+import axios from "axios";
 
 export default {
   name: "NoticeList",
@@ -49,108 +51,78 @@ export default {
   },
   data() {
     return {
-      user_id: JSON.parse(sessionStorage.getItem("userInfo")).user_id,
-      notice: [],
-      idCheck: ''
+      notices: [],
+      isAdmin: "",
     };
   },
   created() {
+    // 비동기
+    // TODO : 글목록 얻기.
     http.get("/notice/api/list").then((response) => {
-      this.notice = response.data.list;
+      this.notices = response.data.list;
     });
 
-    http.get(`/user/api/checkAdmin/${this.user_id}`).then((response) => {
-      if (response.data.check) {
-        this.idCheck = true;
-      } else {
-        this.idCheck = false;
-      }
-    })
+    axios
+      .get(
+        "http://192.168.208.54:80/user/api/checkAdmin/" +
+          JSON.parse(sessionStorage.getItem("userInfo")).user_id
+      )
+      .then((response) => {
+        if (response.data.check) {
+          this.isAdmin = true;
+        } else {
+          this.isAdmin = false;
+        }
+      });
   },
-  computed: {
-    chunkedNotices() {
-      // Chunk the notices array into smaller arrays, if desired
-      const chunkSize = 1; // Set the desired chunk size here
-      const chunkedArray = [];
-
-      for (let i = 0; i < this.notice.length; i += chunkSize) {
-        const chunk = this.notice.slice(i, i + chunkSize);
-        chunkedArray.push(chunk);
-      }
-
-      return chunkedArray;
-    },
+  methods: {
+    movePage() {},
   },
-  methods: {},
 };
 </script>
 
 <style scoped>
-.notice-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 100px;
-  width: 800px;
-  border: 1px solid black;
+.notice-list-container {
+  margin-bottom: 20px;
+  margin: 200px;
 }
 
-.table-container {
-  width: 50px;
-  left: 0;
-  right: 0;
-  /* margin-left: auto; */
-  /* margin-right: auto; */
+.underline {
+  text-decoration: underline;
 }
 
-.write-button-container {
-  /* position: absolute; */
-  top: 0;
-  right: 0;
-  margin: 10px;
+.add-button-container {
+  text-align: right;
+  margin-bottom: 10px;
 }
 
-.notice-table th,
-.notice-table td {
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
-  text-align: center;
-  height: 80px;
-  border-radius: 4px;
-}
-
-.notice-table {
-  width: auto;
-  margin: 0 auto;
-}
-
-.notice-table th {
-  background-color: #f2f2f2;
-}
-
-.notice-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.notice-table tbody tr:hover {
-  background-color: #e6f7ff;
-  cursor: pointer;
-}
-
-.write-button {
-  padding: 10px 20px;
+.add-button {
+  padding: 8px 16px;
   background-color: #42a1ff;
   color: #ffffff;
   font-weight: bold;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin: 10px;
 }
 
-.table-container {
-  width: 90%;
-  position: relative;
+.add-button:hover {
+  background-color: #1e88e5;
+}
+
+#notice-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+#notice-list th {
+  border-bottom: 1px solid #cccccc;
+
+  padding: 15px;
+}
+#notice-list td {
+  border-bottom: 1px solid #cccccc;
+  text-align: center;
 }
 </style>

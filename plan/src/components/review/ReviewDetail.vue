@@ -5,7 +5,7 @@
         <div class="review-title">{{ review.title }}</div>
         <div class="bookmark-icon">
           <!-- 북마크 아이콘 또는 이미지 등 원하는 내용으로 대체 -->
-          계획 글 : <i class="fas fa-bookmark">www.naver.com</i>
+          계획 글 : <i class="fas fa-bookmark">{{ review.plan_id }}</i>
         </div>
         <div class="author-info">
           <h5 class="author-name">작성자 : {{ review.user_id }}</h5>
@@ -22,6 +22,7 @@
           <router-link :to="`/review/modify/${review_id}`">
             <button class="modify-btn">수정</button>
           </router-link>
+          <button class="delete-btn" @click="deleteReview">삭제</button>
         </div>
       </div>
       <div class="divider"></div>
@@ -70,6 +71,7 @@
 </template>
 <script>
 import { http } from "@/api/http";
+import router from "@/router";
 
 export default {
   data() {
@@ -138,13 +140,12 @@ export default {
 
       this.comments.push(comment);
       this.newComment = "";
-      // 여기서 서버로 댓글을 보내는 요청(axios 등)을 보내면 됩니다.
+
       http.post("/review_comment/api/write", {
         review_id: this.review_id,
         user_id: JSON.parse(sessionStorage.getItem("userInfo")).user_id,
         content: this.$refs.content.value,
       });
-      // axios.post("http://localhost:80/review_comment/api/write", comment)
     },
     toggleLike(comment) {
       comment.liked = !comment.liked;
@@ -168,6 +169,11 @@ export default {
         .then(() => {
           this.followCheck = false;
         });
+    },
+    deleteReview() {
+      http.delete(`/review/api/delete/${this.review_id}`).then(() => {
+        router.push("/review/list");
+      });
     },
   },
 };
@@ -385,5 +391,17 @@ export default {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin: 10px;
+}
+
+.delete-btn {
+  width: 70px;
+  height: 30px;
+  background-color: red;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px;
 }
 </style>

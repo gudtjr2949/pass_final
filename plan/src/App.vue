@@ -2,7 +2,7 @@
   <div id="app">
     <the-header></the-header>
     <div class="background-container">
-      <img src="@/assets/2.jpeg" class="background-image" />
+      <img src="@/assets/main2.jpg" class="background-image" />
     </div>
     <router-view />
     <!-- <the-footer></the-footer> -->
@@ -45,7 +45,7 @@ export default {
 
 .background-image {
   width: 100%;
-  height: 30%;
+  height: 100%;
   position: absolute;
   object-fit: cover;
   z-index: -1; /* 이미지를 뒤로 보냄 */

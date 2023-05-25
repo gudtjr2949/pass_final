@@ -5,6 +5,20 @@
       <input type="text" id="title" ref="title" class="form-control" />
     </div>
     <div class="form-group">
+      <label for="title">계획</label>
+      <div class="plan-list">
+        <div v-for="plan in plan_list" :key="plan.plan_id">
+          <input
+            type="radio"
+            :id="`plan-${plan.plan_id}`"
+            :value="plan.plan_id"
+            v-model="selectedPlan"
+          />
+          <label :for="`plan-${plan.plan_id}`"> {{ plan.title }}</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
       <label for="content">내용</label>
       <textarea id="content" ref="content" class="form-control"></textarea>
     </div>
@@ -37,7 +51,7 @@
 <script>
 import axios from "axios";
 import router from "../../router";
-// import { http } from "@/api/http";
+import { http } from "@/api/http";
 
 export default {
   data() {
@@ -47,7 +61,15 @@ export default {
       content: "",
       image: [],
       uploadedImages: [],
+      plan_list: [],
+      selectedPlan: null,
     };
+  },
+  created() {
+    http.get(`/plan/api/${this.user_id}`).then((response) => {
+      this.plan_list = response.data.list;
+      console.log(this.plan_list);
+    });
   },
   methods: {
     checkValue() {
@@ -82,15 +104,10 @@ export default {
       );
       formData.append("title", this.$refs.title.value);
       formData.append("content", this.$refs.content.value);
+      formData.append("plan_id", this.selectedPlan);
 
-      console.log(this.$refs.title.value + " " + this.$refs.content.value);
-      console.log(formData.get("image[]"));
-
-      //   http.post("/review/api/write", formData).then(() => {
-      //     router.push("/review/list");
-      //   });
       axios
-        .post("http://192.168.0.7:80/review/api/write", formData)
+        .post("http://192.168.208.54:80/review/api/write", formData)
         .then(() => {
           router.push("/review/list");
         });

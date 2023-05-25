@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="follower-list">
     <h3>Follower List</h3>
     <!-- <ul> -->
     <div
@@ -17,7 +17,6 @@
 </template>
   
 <script>
-// import axios from "axios";
 import { http } from "@/api/http";
 
 export default {
@@ -38,6 +37,12 @@ export default {
 </script>
   
 <style scoped>
+.follower-list {
+  margin-block: 100px;
+  margin-inline: 400px;
+  text-align: center;
+}
+
 .follower-item {
   margin-bottom: 10px;
 }

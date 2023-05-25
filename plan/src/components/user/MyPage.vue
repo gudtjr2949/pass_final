@@ -25,11 +25,11 @@
         {{ following.length }}
       </router-link>
     </div>
-    <div>
+    <div class="modify-btn">
       <router-link to="/user/modify">
-        <button>회원정보 수정</button>
+        <button class="add-button">회원정보 수정</button>
       </router-link>
-      <button @click="deleteUser">회원탈퇴</button>
+      <button class="add-button" @click="deleteUser">회원탈퇴</button>
     </div>
   </div>
 </template>
@@ -76,9 +76,9 @@ export default {
       http.delete(`/user/api/delete/${this.user.user_id}`).then(() => {
         router.push("/");
         this.$router.go(this.$router.currentRoute);
-      })
-    }
-  }
+      });
+    },
+  },
 };
 </script>
   
@@ -120,6 +120,28 @@ export default {
 .follower-container h3,
 .following-container h3 {
   margin-bottom: 8px;
+}
+
+.modify-btn {
+  /* align-content: center; */
+  /* justify-content: center; */
+  display: flex;
+  justify-content: center;
+}
+
+.add-button {
+  padding: 8px 16px;
+  background-color: #42a1ff;
+  color: #ffffff;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.add-button:hover {
+  background-color: #1e88e5;
 }
 </style>
   

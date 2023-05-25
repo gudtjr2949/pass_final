@@ -115,11 +115,11 @@ export default new Router({
       component: NoticeWrite
     },
     {
-      path: '/notice/detail',
+      path: '/notice/detail/:notice_id',
       component: NoticeDetail
     },
     {
-      path: '/notice/modify',
+      path: '/notice/modify/:notice_id',
       component: NoticeModify
     },
   ]

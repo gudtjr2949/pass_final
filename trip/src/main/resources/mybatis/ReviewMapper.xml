@@ -37,8 +37,8 @@
     </sql>
 
     <insert id="write" parameterType="reviewDto">
-        insert into travel_review (user_id, title, content, first_image)
-        values (#{user_id}, #{title}, #{content}, #{first_image})
+        insert into travel_review (user_id, title, content, first_image, plan_id)
+        values (#{user_id}, #{title}, #{content}, #{first_image}, #{plan_id})
     </insert>
 
     <select id="getMaxReviewId" resultType="java.lang.Integer">
@@ -52,7 +52,7 @@
     </select>
 
     <select id="select" parameterType="int" resultType="reviewDto">
-        select user_id, review_id, title, content, `like`, hit, register_time
+        select user_id, review_id, title, content, `like`, hit, register_time, plan_id
         from travel_review
         where review_id = #{review_id}
     </select>
