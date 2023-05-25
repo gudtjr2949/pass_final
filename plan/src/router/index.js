@@ -75,7 +75,7 @@ export default new Router({
     {
       path: '/kakao',
       beforeEnter() {
-        const clientId = 'Your API Key';
+        const clientId = '980d869835ee11e022c77686d37291f1';
         const redirectUri = 'http://localhost:80/user/api/kakao/callback';
         const responseType = 'code';
         const authUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}`;
