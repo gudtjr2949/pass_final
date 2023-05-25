@@ -16,7 +16,7 @@
           </div>
         </div>
         <div>
-          <router-link :to="`/review/modify/${plan_id}`">
+          <router-link :to="`/plan/modify/${plan_id}`">
             <button class="modify-btn">수정</button>
           </router-link>
           <button class="modify-btn">스크랩</button>
@@ -84,6 +84,9 @@
 <div class="divider"></div>
 
       <h4 class="section-title">본문</h4>
+    <div>
+      여행 시작 : {{plan.start_date}} 고생 시작 : {{plan.end_date}}
+    </div>
       <div class="review-content">{{ plan.content }}</div>
       <!-- <div class="image-gallery">
         <div v-for="image in image" :key="image.image_path" class="image-item">

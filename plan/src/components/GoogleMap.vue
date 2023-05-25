@@ -845,6 +845,55 @@ export default {
       return `${this.curX}, ${this.curY}`;
     },
   },
+
+  created(){
+    const user_id = this.user_id;
+    console.log(user_id);
+
+    http
+    .get("plan/api/plan_id/" + user_id)
+    .then((res) =>{
+      console.log(res)
+      this.plan_id = res.data.plan_id;
+      
+
+       http.get("/plan/api/place/" + plan_id)
+        .then((res) => {
+          console.log(res)
+          this.plans = res.data.list;
+        })
+        .catch((error) => {
+
+          console.error(error);
+        });
+
+        http.get("/plan/api/route/" + plan_id)
+        .then((res) => {
+          console.log(res)
+          this.resRoute = res.data.list;
+        })
+        .catch((error) => {
+          console.log(res)
+          console.error(error);
+        });
+
+        http.get("/plan/api/plane/" + plan_id)
+        .then((res) => {
+          console.log(res)
+          this.resPlane = res.data.list;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+
+    }).catch((error) =>{
+          console.error(error);
+    }) 
+    
+
+  },
+
   mounted() {
     this.initMap();
   },
