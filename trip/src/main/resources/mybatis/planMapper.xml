@@ -49,6 +49,17 @@
     </resultMap>
 
 
+    <update id="modify" parameterType="PlanDto">
+        update travel_plan
+        set title = #{title},
+        content = #{content},
+        start_date = #{start_date},
+        end_date = #{end_date}
+        where plan_id = #{plan_id};
+    </update>
+
+
+
     <select id="planRoute" parameterType="int" resultMap="RouteDtoMap">
         select *
         from plan_route
@@ -108,6 +119,14 @@
         order by register_time desc limit 1;
     </select>
 
+    <select id="planIdByUserId" parameterType="String" resultType="int">
+        select plan_id
+        from travel_plan
+        where user_id = #{user_id}
+        and store like "NO"
+        and plan_id = (select plan_id from travel_plan where user_id = #{user_id} order by plan_id desc limit 1)
+    </select>
+
     <delete id="deletePlan" parameterType="int">
         delete
         from travel_plan
@@ -159,19 +178,19 @@
         plan_like
         where plan_id = #{plan_id} and user_id = #{user_id};
     </delete>
-    
+
     <insert id="userPlanMake" parameterType="UserPlanDto">
         insert into user_plan_info
         (plan_id, name, vicinity, photo, url, sequence)
         values (#{plan_id}, #{name}, #{vicinity}, #{photo}, #{url}, #{sequence});
     </insert>
-    
+
     <delete id="userPlanDelete" parameterType="int">
         delete
         from user_plan_info
         where plan_id = #{plan_id};
     </delete>
-    
+
 
     <update id="userPlanUpdate" parameterType="UserPlanDto">
         update user_plan_info

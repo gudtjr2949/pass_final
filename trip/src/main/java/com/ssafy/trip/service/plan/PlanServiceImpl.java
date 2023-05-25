@@ -113,5 +113,15 @@ public class PlanServiceImpl implements PlanService{
         return planRepository.planRoute(plan_id);
     }
 
+    @Override
+    public void modify(PlanDto planDto) {
+        planRepository.modify(planDto);
+    }
+
+    @Override
+    public int planIdByUserId(String user_id) {
+        return planRepository.planIdByUserId(user_id);
+    }
+
 
 }

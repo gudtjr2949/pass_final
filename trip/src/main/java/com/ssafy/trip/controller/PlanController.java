@@ -137,6 +137,23 @@ public class PlanController {
         }
     }
 
+    @GetMapping("/api/plan_id/{user_id}")
+    ResponseEntity<Map<String, Object>> planIdByUserId(@PathVariable("user_id") String user_id){
+        System.out.println(user_id);
+        Map<String, Object> map = new HashMap<>();
+        try {
+            int plan_id = planService.planIdByUserId(user_id);
+            map.put("plan_id", plan_id);
+            System.out.println(plan_id);
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+    }
+
+
     @PostMapping("/api") // 계획 생성 : 글, 장소 정보 다 저장
     ResponseEntity<Map<String, Object>> make(@RequestBody Map<String, Object> map){
         System.out.println("post" + map);
@@ -470,6 +487,30 @@ public class PlanController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PutMapping("/api/modify/plan")
+    ResponseEntity<Map<String, Object>> modify(@RequestBody Map<String, Object> map){
+        System.out.println(map);
+        PlanDto planDto = new PlanDto();
+
+        int plan_id = Integer.parseInt((String)map.get("plan_id"));
+        planDto.setPlan_id(plan_id);
+
+        planDto.setTitle((String) map.get("title"));
+        planDto.setContent((String) map.get("content"));
+        planDto.setStart_date((String) map.get("start_date"));
+        planDto.setEnd_date((String) map.get("end_date"));
+
+        try {
+            planService.modify(planDto);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+    }
+
 
     @PutMapping("/api/downlike")
     ResponseEntity<Map<String, Object>> downLike(@RequestBody Map<String, Object> map){
@@ -503,27 +544,27 @@ public class PlanController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PostMapping("/api/find")
     ResponseEntity<Map<String, Object>> findPath(@RequestBody Map<String, Object> map){
 
-    int size = (int) map.get("size");
-    Map<String,Object> resMap = new HashMap<>();
-        
-    
-    try {
-    	Map<String, Object> findPath = placeService.findPath(map, size);
+        int size = (int) map.get("size");
+        Map<String,Object> resMap = new HashMap<>();
 
-    	Gson gson = new Gson();
-    	OptRouteDto optroute = gson.fromJson(gson.toJson(findPath), OptRouteDto.class);
-    	
-    	resMap.put("optroute", optroute);
-    	
-    	return new ResponseEntity<Map<String,Object>>(resMap, HttpStatus.OK);
-    }catch (Exception e) {
-    	return new ResponseEntity<Map<String,Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-}
-    
+
+        try {
+            Map<String, Object> findPath = placeService.findPath(map, size);
+
+            Gson gson = new Gson();
+            OptRouteDto optroute = gson.fromJson(gson.toJson(findPath), OptRouteDto.class);
+
+            resMap.put("optroute", optroute);
+
+            return new ResponseEntity<Map<String,Object>>(resMap, HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<Map<String,Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

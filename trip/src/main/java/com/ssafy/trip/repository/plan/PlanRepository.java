@@ -32,5 +32,8 @@ public interface PlanRepository {
     List<UserPlanDto> planPlace(int plan_id);
     List<PlaneDto> planPlane(int plan_id);
     List<RouteDto> planRoute(int plan_id);
+    void modify(PlanDto planDto);
+    int planIdByUserId(String user_id);
+
 
 }
