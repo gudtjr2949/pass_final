@@ -800,43 +800,43 @@ export default {
     start_date: {
       handler: _.debounce(function(newValue) {
         this.sendFormData();
-      }, 500), // 500ms 디바운스 지연 시간
+      }, 5000), // 500ms 디바운스 지연 시간
       deep: true,
     },
     end_date: {
       handler: _.debounce(function(newValue) {
         this.sendFormData();
-      }, 500), // 500ms 디바운스 지연 시간
+      }, 5000), // 500ms 디바운스 지연 시간
       deep: true,
     },
     plan_title: {
       handler: _.debounce(function(newValue) {
         this.sendFormData();
-      }, 500), // 500ms 디바운스 지연 시간
+      }, 5000), // 500ms 디바운스 지연 시간
       deep: true,
     },
     plans: {
       handler: _.debounce(function(newValue) {
         this.sendFormData();
-      }, 500), // 500ms 디바운스 지연 시간
+      }, 5000), // 500ms 디바운스 지연 시간
       deep: true,
     },
     content: {
       handler: _.debounce(function(newValue) {
         this.sendFormData();
-      }, 500), // 500ms 디바운스 지연 시간
+      }, 5000), // 500ms 디바운스 지연 시간
       deep: true,
     },
     resRoute:{
       handler: _.debounce(function(newValue) {
         this.sendFormData();
-      }, 500), // 500ms 디바운스 지연 시간
+      }, 5000), // 500ms 디바운스 지연 시간
       deep: true,
     },
     resPlane:{
       handler: _.debounce(function(newValue) {
         this.sendFormData();
-      }, 500), // 500ms 디바운스 지연 시간
+      }, 5000), // 500ms 디바운스 지연 시간
       deep: true,
     }
   },
@@ -854,23 +854,37 @@ export default {
     .get("plan/api/plan_id/" + user_id)
     .then((res) =>{
       console.log(res)
-      this.plan_id = res.data.plan_id;
-      
+      const plan_id = res.data.plan_id;
+      this.plan_id = plan_id;
+      if (plan_id === undefined) return;
 
+      http.get("/plan/api/detail/" + plan_id)
+        .then((res) => {
+          const plan = res.data.plan;
+          this.start_date = plan.start_date;
+          this.end_date = plan.end_date;
+          this.content = plan.content;
+          this.plan_title = plan.title          
+          
+        })
+        .catch((error) => {
+          console.error(error);
+        });
        http.get("/plan/api/place/" + plan_id)
         .then((res) => {
           console.log(res)
-          this.plans = res.data.list;
+          this.plans.push(res.data.list);
+          console.log(this.plans)
         })
         .catch((error) => {
-
           console.error(error);
         });
 
         http.get("/plan/api/route/" + plan_id)
         .then((res) => {
           console.log(res)
-          this.resRoute = res.data.list;
+          this.resRoute.push(res.data.list);
+          console.log(this.resRoute)
         })
         .catch((error) => {
           console.log(res)
@@ -880,7 +894,8 @@ export default {
         http.get("/plan/api/plane/" + plan_id)
         .then((res) => {
           console.log(res)
-          this.resPlane = res.data.list;
+          this.resPlane.push(res.data.list);
+          console.log(this.resPlane)
         })
         .catch((error) => {
           console.error(error);
@@ -1702,6 +1717,8 @@ export default {
 
         http.put("/plan/api", formData).then((response) => {
           console.log(response.data);
+        }).catch((error) => {
+          console.log(error)
         });
       } else {
         const formData = {
@@ -1720,7 +1737,9 @@ export default {
           console.log(response.data);
           var id = response.data;
           this.plan_id = id.plan_id;
-        });
+        }).catch((error) => {
+          console.log(error)
+        });;
       }
     },
 
