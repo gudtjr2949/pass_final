@@ -190,7 +190,7 @@ export default {
 <style scoped>
 .template-container {
   background-color: #ffffff;
-  margin: 100px;
+  /* margin: 100px; */
 }
 
 .review-container {
@@ -202,7 +202,6 @@ export default {
 
 .review-header {
   margin-bottom: 40px;
-  /* 제목과 계획글, 내용 사이의 간격을 늘림 */
 }
 
 .divider {

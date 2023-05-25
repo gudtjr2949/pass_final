@@ -6,12 +6,10 @@
       <div class="bg-video">
         <video class="bg-video__content" autoplay muted loop>
           <source src="@/assets/airplain.mp4" type="video/mp4" />
-          <!-- <source src="img/video.webm" type="video/webm" /> -->
-          Your browser is not supported!
         </video>
       </div>
     </div>
-    <router-view />
+    <router-view class="router"></router-view>
     <!-- <the-footer></the-footer> -->
   </div>
 </template>
@@ -46,6 +44,7 @@ export default {
 <style scoped>
 #app {
   width: 100%;
+  /* height: 100%; */
   margin: 0 auto;
   animation: fadein 5s ease 3s;
   -webkit-animation: fadein 3s;
@@ -58,29 +57,27 @@ export default {
   /* position: relative; */
 }
 
-.background-image {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  object-fit: cover;
-  z-index: -2; /* 이미지를 뒤로 보냄 */
-}
-
 .bg-video {
   position: absolute;
-  top: 0;
-  left: 0;
+  /* top: 0; */
+  /* left: 0; */
   height: 100%;
   width: 100%;
   z-index: -1;
   opacity: 0.5;
+  
 }
 
 .bg-video__content {
   height: 100%;
   width: 100%;
-  object-fit: cover; /* background-size: cover 와 비슷함. (HTML 요소 or 비디오와 작동) */
+  object-fit: cover;
 }
+
+.router {
+  margin-bottom: 100px;
+}
+
 
 @keyframes fadein {
   from {

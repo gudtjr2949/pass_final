@@ -326,7 +326,7 @@ export default {
 
 .template-container {
   background-color: #ffffff;
-  margin: 100px;
+  /* margin: 100px; */
 }
 
 .review-container {

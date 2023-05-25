@@ -41,8 +41,8 @@ public class ReviewController {
     	
         Map<String, String> res = new HashMap<>();
 
-        String uploadPath = "C:\\Users\\SSAFY\\Desktop\\new\\pass_final\\plan\\src\\assets\\save_image";
-//        String uploadPath = "/Users/leehyungseok/Desktop/SSAFY/pass_final/pass_final/plan/src/assets/save_image";
+//        String uploadPath = "C:\\Users\\SSAFY\\Desktop\\new\\pass_final\\plan\\src\\assets\\save_image";
+        String uploadPath = "/Users/leehyungseok/Desktop/SSAFY/pass_final/pass_final/plan/src/assets/save_image";
         try {
             ReviewDto reviewDto = new ReviewDto();
 
@@ -177,8 +177,8 @@ public class ReviewController {
     ) {
         Map<String, String> res = new HashMap<>();
 
-        String uploadPath = "C:\\Users\\SSAFY\\Desktop\\new\\pass_final\\plan\\src\\assets\\save_image\\" + review_id;
-//        String uploadPath = "/Users/leehyungseok/Desktop/SSAFY/pass_final/pass_final/plan/src/assets/save_image" + review_id;
+//        String uploadPath = "C:\\Users\\SSAFY\\Desktop\\new\\pass_final\\plan\\src\\assets\\save_image\\" + review_id;
+        String uploadPath = "/Users/leehyungseok/Desktop/SSAFY/pass_final/pass_final/plan/src/assets/save_image" + review_id;
 
         try {
             ReviewDto reviewDto = new ReviewDto();

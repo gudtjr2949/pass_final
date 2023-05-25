@@ -64,7 +64,7 @@ export default {
 
     axios
       .get(
-        "http://192.168.208.54:80/user/api/checkAdmin/" +
+        "http://172.30.1.58:80/user/api/checkAdmin/" +
           JSON.parse(sessionStorage.getItem("userInfo")).user_id
       )
       .then((response) => {

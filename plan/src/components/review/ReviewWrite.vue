@@ -108,7 +108,7 @@ export default {
       formData.append("plan_id", this.selectedPlan);
 
       axios
-        .post("http://192.168.208.54:80/review/api/write", formData)
+        .post("http://172.30.1.58:80/review/api/write", formData)
         .then(() => {
           router.push("/review/list");
         });

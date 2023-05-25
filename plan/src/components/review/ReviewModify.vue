@@ -106,7 +106,7 @@ export default {
       formData.append("review_id", this.$route.params.review_id);
 
       axios
-        .put(`http://192.168.208.54:80/review/api/modify`, formData)
+        .put(`http://172.30.1.58:80/review/api/modify`, formData)
         .then(() => {
           router.push(`/review/detail/${this.review_id}`);
         });

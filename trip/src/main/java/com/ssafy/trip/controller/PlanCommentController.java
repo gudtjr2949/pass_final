@@ -14,7 +14,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/plancomment")
-@CrossOrigin(origins = "http://localhost:8080")
+//@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {})
 public class PlanCommentController {
 
     private PlanCommentService planCommentService;
