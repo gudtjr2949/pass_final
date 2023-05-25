@@ -1,8 +1,6 @@
 <template>
   <div class="footer">
-    <div class="footer-content">
-      주식회사 최범선
-    </div>
+    <div class="footer-content">주식회사 최범선</div>
   </div>
 </template>
   

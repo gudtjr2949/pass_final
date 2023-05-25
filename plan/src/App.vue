@@ -11,7 +11,7 @@
 
 <script>
 import TheHeader from "./components/common/TheHeader.vue";
-// import TheFooter from './components/common/TheFooter.vue'
+// import TheFooter from "./components/common/TheFooter.vue";
 
 export default {
   name: "App",
@@ -48,7 +48,7 @@ export default {
   height: 100%;
   position: absolute;
   object-fit: cover;
-  z-index: -1; /* 이미지를 뒤로 보냄 */
+  z-index: -2; /* 이미지를 뒤로 보냄 */
 }
 
 @keyframes fadein {

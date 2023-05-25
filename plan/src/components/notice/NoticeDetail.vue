@@ -6,10 +6,11 @@
         <div class="author-info">
           <h5 class="author-name">작성자 : {{ notice.user_id }}</h5>
         </div>
-        <div>
-          <router-link :to="`/notice/modify/${this.notice_id}`" v-if="isAdmin">
+        <div v-if="isAdmin == true">
+          <router-link :to="`/notice/modify/${this.notice_id}`">
             <button class="modify-btn">수정</button>
           </router-link>
+          <button class="delete-btn" @click="deleteNotice">삭제</button>
         </div>
       </div>
       <div class="divider"></div>
@@ -20,6 +21,8 @@
 </template>
 <script>
 import { http } from "@/api/http";
+import axios from "axios";
+import router from "@/router";
 
 export default {
   data() {
@@ -51,6 +54,16 @@ export default {
           this.isAdmin = false;
         }
       });
+
+    console.log(this.isAdmin);
+  },
+
+  methods: {
+    deleteNotice() {
+      http.delete(`/notice/api/delete/${this.notice_id}`).then(() => {
+        router.push("/notice/list");
+      });
+    },
   },
 };
 </script>
@@ -267,5 +280,16 @@ export default {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.delete-btn {
+  width: 70px;
+  height: 30px;
+  background-color: red;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px;
 }
 </style>
